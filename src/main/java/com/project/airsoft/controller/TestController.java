@@ -14,4 +14,9 @@ public class TestController {
         log.info("테스트");
         return "Hello, World";
     }
+
+    @GetMapping("/api/hello2")
+    public String test2() {
+        return "테스트";
+    }
 }
