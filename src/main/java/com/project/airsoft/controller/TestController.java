@@ -17,6 +17,6 @@ public class TestController {
 
     @GetMapping("/api/hello2")
     public String test2() {
-        return "테스트";
+        return "테스트2";
     }
 }
