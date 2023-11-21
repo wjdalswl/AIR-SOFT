@@ -1,6 +1,9 @@
 package com.project.airsoft.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +34,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
@@ -45,7 +49,6 @@ public class User {
 
     private String email;
 
-    private String roles;
 
     @OneToMany(mappedBy = "user")
     @Exclude
@@ -55,12 +58,13 @@ public class User {
         this.reservation = reservation;
     }
 
-    public List<String> getRoleList(){
-        if(this.roles.length() > 0){
-            return Arrays.asList(this.roles.split(","));
-        }
-        return new ArrayList<>();
-    }
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Authority> roles = new ArrayList<>();
 
+    public void setRoles(List<Authority> role) {
+        this.roles = role;
+        role.forEach(o -> o.setUser(this));
+    }
 }
 
