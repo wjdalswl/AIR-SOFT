@@ -46,13 +46,5 @@ public class Flight {
 
     private String operatingDay;
 
-    @OneToMany(mappedBy = "flight")
-    private List<Reservation> reservationList;
 
-    @OneToMany(mappedBy = "flight")
-    private List<Seats> seatsList;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "price_id")
-    private Price price;
 }

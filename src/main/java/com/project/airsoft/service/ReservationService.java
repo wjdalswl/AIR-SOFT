@@ -1,2 +1,4 @@
-package com.project.airsoft.service;public class ReservatoinService {
+package com.project.airsoft.service;
+
+public class ReservationService {
 }

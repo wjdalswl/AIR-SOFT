@@ -1,12 +1,17 @@
 package com.project.airsoft.domain;
 
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +34,8 @@ public class FlightSchedule {
     @ManyToOne
     private Flight flight;
 
+    private String flightNumber;
+
     private String departureAirport;
 
     private String arrivalAirport;
@@ -39,4 +46,15 @@ public class FlightSchedule {
 
     private LocalDate scheduleDate;
 
+    private Long seatsTotal;
+
+    @OneToMany(mappedBy = "flightSchedule")
+    private List<Seats> seatsList;
+
+    @OneToMany(mappedBy = "flightSchedule")
+    private List<Reservation> reservationList;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "price_id")
+    private Price price;
 }
