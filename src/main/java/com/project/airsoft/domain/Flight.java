@@ -1,12 +1,14 @@
 package com.project.airsoft.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import java.time.LocalTime;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -14,9 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -28,13 +32,19 @@ public class Flight {
 
     private Long aircraftId;
 
+    private String airline;
+
+    private String flightNumber;
+
     private String departureAirport;
 
     private String arrivalAirport;
 
-    private LocalDateTime departureTime;
+    private LocalTime departureTime;
 
-    private LocalDateTime arrivalTime;
+    private LocalTime arrivalTime;
+
+    private String operatingDay;
 
     @OneToMany(mappedBy = "flight")
     private List<Reservation> reservationList;
@@ -43,5 +53,6 @@ public class Flight {
     private List<Seats> seatsList;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "price_id")
     private Price price;
 }
