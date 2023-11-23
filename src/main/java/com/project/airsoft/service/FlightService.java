@@ -41,17 +41,17 @@ public class FlightService {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
+                // 배열 길이를 확인하는 체크 추가
+                if (data.length == 9) {
+                    Flight flight = createFlightFromCsv(data);
+                    flightRepository.save(flight);
 
-                // Skip header line
-                if (data[0].equalsIgnoreCase("항공사")) {
-                    continue;
+                    // 저장된 항공편에 대한 일정 생성
+                    createFlightSchedules(flight, startDate, endDate);
+                } else {
+                    // 데이터 배열이 예상된 길이가 아닌 경우에 대한 로깅 또는 처리
+                    log.warn("잘못된 데이터 형식: " + line);
                 }
-
-                Flight flight = createFlightFromCsv(data);
-                flightRepository.save(flight);
-
-                // Generate schedules for the saved flight
-                createFlightSchedules(flight, startDate, endDate);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -134,11 +134,14 @@ public class FlightService {
 
         for (int i = 1; i <= numSeatsToAdd; i++) {
             for (char letter : seatLetters) {
+                String seatClass = (i == 1) ? "business" : "economy"; // 1열은 "business", 나머지는 "economy"
+
                 Seats seat = Seats.builder()
                         .flightSchedule(schedule)
                         .seatRow(i)
                         .seatLetter(String.valueOf(letter))
                         .available(true)
+                        .seatClass(seatClass)
                         .build();
 
                 seatsBatch.add(seat);

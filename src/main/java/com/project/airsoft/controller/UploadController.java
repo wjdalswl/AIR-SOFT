@@ -1,14 +1,20 @@
 package com.project.airsoft.controller;
 
+import com.project.airsoft.dto.SignRequest;
+import com.project.airsoft.dto.SignResponse;
 import com.project.airsoft.service.FlightService;
+import com.project.airsoft.service.SignService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +31,13 @@ public class UploadController {
 
     private final FlightService flightService;
 
-    @GetMapping("/admin")
+
+    @GetMapping("/adminupload")
     public String showForm() {
         return "uploadForm";
     }
 
-    @PostMapping("/admin/upload")
+    @PostMapping("/adminupload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a file to upload.");
