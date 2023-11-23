@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { FlightData, fetchFlight } from '../../api';
+import { FlightData } from '../../api';
 
 const Container = styled.div`
   width: 100%;
@@ -36,42 +36,33 @@ const Flight = styled.li`
 `;
 
 function FlightSelect() {
-  const today = new Date();
-  const todayISOString = today.toISOString().split('T')[0];
-
   const [flightData, setFlightData] = useState<FlightData[]>([]);
+  const [passengerCount, setPassengerCount] = useState<number | undefined>(1);
+  const [paymentType, setPaymentType] = useState<string>('Reservation');
+  const [paymentAmount, setPaymentAmount] = useState<number>(100000);
+
   const location = useLocation();
 
-  // URL에서 쿼리 파라미터 추출
-  const searchParams = new URLSearchParams(location.search);
-  const paymentType = searchParams.get('paymentType') || 'Reservation';
-  const departure = searchParams.get('departure') || 'GMP';
-  const destination = searchParams.get('destination') || 'PUS';
-  const date = searchParams.get('date') || todayISOString;
-  const passengerCount = Number(searchParams.get('passengerCount')) || 1;
-  const seatClass = searchParams.get('seatClass') || 'economy';
+  const { flightData: searchResults } = (location.state as {
+    flightData?: FlightData[];
+  }) || { flightData: [] };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchFlight();
-        if (response.data) {
-          const filteredData = response.data.filter((item) => {
-            return (
-              item.항공사 === 'KAL' &&
-              item.출발공항 === departure &&
-              item.도착공항 === destination
-            );
-          });
-          setFlightData(filteredData);
-        }
-      } catch (error) {
-        console.error('API 호출 오류:', error);
-      }
-    };
+    if (searchResults) {
+      console.log('Search Results:', searchResults);
+      setFlightData(searchResults);
+      console.log('Flight Data222222:', flightData);
+      const defaultPaymentAmount = 100000;
 
-    fetchData(); // fetchData 호출
-  }, [location.search, todayISOString, departure, destination]);
+      if (searchResults[0]?.seatClass === 'economy') {
+        setPaymentAmount(100000); // 이코노미의 경우 10만원
+      } else if (searchResults[0]?.seatClass === 'business') {
+        setPaymentAmount(150000); // 퍼스트 클래스의 경우 15만원
+      } else {
+        setPaymentAmount(defaultPaymentAmount); // 다른 경우 기본값 설정
+      }
+    }
+  }, [location.state, searchResults, passengerCount, paymentType]);
 
   return (
     <Container>
@@ -79,7 +70,6 @@ function FlightSelect() {
         {flightData.length > 0 ? (
           <div>
             <h3>항공편 조회 결과</h3>
-
             <FlightList>
               {flightData.map((flight, index) => (
                 <Flight key={index}>
@@ -87,30 +77,27 @@ function FlightSelect() {
                     to={{
                       pathname: `/SeatSelection`,
                       state: {
-                        flightDetails: {
-                          airline: flight.항공사,
-                          departureTime: flight.출발시간,
-                          departureAirport: flight.출발공항,
-                          flightNumber: flight.운항편명,
-                          flightDay: flight.운항요일,
-                          startDate: flight.시작일자,
-                          arrivalTime: flight.도착시간,
-                          arrivalAirport: flight.도착공항,
-                          passengerCount: passengerCount,
-                          date: date,
-                          seatClass: seatClass,
-                        },
+                        paymentType: paymentType,
+                        id: flight.id,
+                        flightNumber: flight.flightNumber,
+                        arrivalAirport: flight.arrivalAirport,
+                        departureAirport: flight.departureAirport,
+                        arrivalTime: flight.arrivalTime,
+                        departureTime: flight.departureTime,
+                        seatClass: flight.seatClass,
+                        seatsTotal: flight.seatsTotal,
+                        passengerCount: passengerCount,
+                        paymentAmount: paymentAmount,
                       },
                     }}
                   >
-                    <span>{flight.항공사}☺️</span>
-                    <span>{flight.출발시간}☺️</span>
-                    <span>{flight.출발공항}☺️</span>
-                    <span>{flight.운항편명}☺️</span>
-                    <span>{flight.운항요일}☺️</span>
-                    <span>{flight.시작일자}☺️</span>
-                    <span>{flight.도착시간}☺️</span>
-                    <span>{flight.도착공항}☺️</span>
+                    <span>{flight.flightNumber}☺️</span>
+                    <span>{flight.arrivalAirport}☺️</span>
+                    <span>{flight.departureAirport}☺️</span>
+                    <span>{flight.arrivalTime}☺️</span>
+                    <span>{flight.departureTime}☺️</span>
+                    <span>{flight.seatsTotal}☺️</span>
+                    <span>{paymentAmount}☺️</span>
                   </Link>
                 </Flight>
               ))}

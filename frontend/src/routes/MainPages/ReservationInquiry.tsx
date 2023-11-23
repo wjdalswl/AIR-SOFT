@@ -1,88 +1,112 @@
-import { styled } from 'styled-components';
 import { useState } from 'react';
-
-const Container = styled.div`
-  margin: 0;
-  padding: 0;
-  width: 80%;
-  height: 46vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-`;
+import {
+  Container,
+  SubContainer,
+  InputDiv,
+  DataInputheading,
+  DataInputDiv,
+  SearchButton,
+  StyledLink,
+} from './ TicketReservation';
 
 function ReservationInquiry() {
-  //출발일 선택 제한을 위한 현재 날짜 불러오기
   const today = new Date();
   const todayISOString = today.toISOString().split('T')[0];
 
   const [reservationNumber, setReservationNumber] = useState('');
-  const [departureDate, setDepartureDate] = useState<string | undefined>(
-    todayISOString
-  );
+  const [date, setDate] = useState<string | undefined>(todayISOString);
   const [passengerLastName, setPassengerLastName] = useState('');
   const [passengerFirstName, setPassengerFirstName] = useState('');
   const [flightStatus, setFlightStatus] = useState(null);
 
-  const handledepartureDateChange = (value: string) => {
-    setDepartureDate(value || todayISOString);
+  const handleDateChange = (value: string) => {
+    setDate(value || todayISOString);
+  };
+
+  const handleSearch = () => {
+    // 조회 기능 구현
+    const queryParams = new URLSearchParams({});
+
+    const apiUrl = `/api/FlightSelect?${queryParams.toString()}`;
+
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Flight Data1111:', data);
+      })
+      .catch((error) => {
+        // 에러 처리
+        console.error(
+          'There has been a problem with your fetch operation:',
+          error
+        );
+      });
   };
 
   return (
     <Container>
-      <div>
-        <h2>항공편 조회</h2>
-        <form>
-          <div>
-            <label>예약번호 또는 항공권번호:</label>
+      <SubContainer>
+        <InputDiv>
+          <DataInputheading>예약번호</DataInputheading>
+          <DataInputDiv>
             <input
               type="text"
+              placeholder="KE1009"
               value={reservationNumber}
               onChange={(e) => setReservationNumber(e.target.value)}
             />
-          </div>
-          <div>
-            <label>출발일</label>
+          </DataInputDiv>
+        </InputDiv>
+        <InputDiv>
+          <DataInputheading>출발일</DataInputheading>
+          <DataInputDiv>
+            <span>📅</span>
             <input
               type="date"
-              value={departureDate}
-              onChange={(e) => handledepartureDateChange(e.target.value)}
+              value={date}
+              onChange={(e) => handleDateChange(e.target.value)}
               min={todayISOString}
               max="2023-12-31"
             />
-          </div>
-          <div>
-            <label>승객 성:</label>
+          </DataInputDiv>
+        </InputDiv>
+      </SubContainer>
+      <SubContainer>
+        <InputDiv>
+          <DataInputheading>승객 성</DataInputheading>
+          <DataInputDiv>
             <input
               type="text"
+              placeholder="홍(hong)"
               value={passengerLastName}
               onChange={(e) => setPassengerLastName(e.target.value)}
             />
-          </div>
-          <div>
-            <label>승객 이름:</label>
+          </DataInputDiv>
+        </InputDiv>
+        <InputDiv>
+          <DataInputheading>승객 이름</DataInputheading>
+          <DataInputDiv>
             <input
               type="text"
+              placeholder="길동(gildong)"
               value={passengerFirstName}
               onChange={(e) => setPassengerFirstName(e.target.value)}
             />
-          </div>
-          <button type="button">조회</button>
-        </form>
-
-        {/* 항공편 조회 결과 표시 */}
-        {flightStatus && (
-          <div>
-            <h3>항공편 조회 결과</h3>
-            <p>항공사: </p>
-            <p>출발지: </p>
-            <p>도착지: </p>
-          </div>
-        )}
-      </div>
+          </DataInputDiv>
+        </InputDiv>
+      </SubContainer>
+      <StyledLink
+        to={{
+          pathname: '/FlightSelect/Reservation',
+        }}
+      >
+        <SearchButton onClick={handleSearch}>조회</SearchButton>
+      </StyledLink>
     </Container>
   );
 }
