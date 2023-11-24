@@ -11,12 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Setter
 public class Seats {
 
     @Id
@@ -30,6 +32,8 @@ public class Seats {
     private String seatLetter;
 
     private boolean available;
+
+    private Long user_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id")
