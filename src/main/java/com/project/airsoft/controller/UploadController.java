@@ -68,16 +68,11 @@ public class UploadController {
         String dateString1 = "2023.11.21";
         String dateString2 = "2023.12.31";
 
-        // Define the format of the input string
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
-        // Parse the string into LocalDateTime
         LocalDate localDateTime1 = LocalDate.parse(dateString1, formatter);
         LocalDate localDateTime2 = LocalDate.parse(dateString2, formatter);
         flightService.processCsv(file, localDateTime1, localDateTime2);
-        // 여기에 CSV 파일을 처리하는 로직을 추가하세요
-        // 예를 들어, 파일을 읽어서 데이터베이스에 저장하는 등의 작업을 수행할 수 있습니다.
-
 
     }
 }

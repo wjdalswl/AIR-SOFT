@@ -22,7 +22,7 @@ public class FlightSearchController {
     public List<FlightSearchResponseDTO> flightSearch(@RequestParam("departure") String departureAirport,
                                                                 @RequestParam("destination") String arrivalAirport,
                                                                 @RequestParam("date") String date,
-                                                                @RequestParam("seatClass") String seatClass) {
+                                                                @RequestParam(name = "seatClass", required = false) String seatClass) {
 
         List<FlightSchedule> flights = flightSearchService.searchFlights(departureAirport, arrivalAirport, date, seatClass);
 
@@ -30,7 +30,6 @@ public class FlightSearchController {
         return convertToResponseDTO(flights, seatClass);
     }
 
-    // 필요에 따라 FlightSearchResponseDTO로의 변환 메서드를 추가할 수 있습니다.
     private List<FlightSearchResponseDTO> convertToResponseDTO(List<FlightSchedule> flights, String seatClass) {
         List<FlightSearchResponseDTO> responseDTOList = new ArrayList<>();
 

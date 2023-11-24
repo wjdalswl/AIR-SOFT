@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // 회원가입과 로그인은 모두 승인
                 .antMatchers("/register", "/login").permitAll()
-                .antMatchers("/adminupload").permitAll()
+                .antMatchers("/adminupload").hasRole("ADMIN")
                 .antMatchers("/api/FlightSelect/**").permitAll()
                 .antMatchers("/**").permitAll()
                 // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용

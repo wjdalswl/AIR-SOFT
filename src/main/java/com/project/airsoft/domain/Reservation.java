@@ -34,7 +34,7 @@ public class Reservation {
 
     private String seatClass;
 
-    private String seatId;
+    private Long seatId;
 
     private int price;
 
