@@ -1,38 +1,16 @@
-import { styled } from 'styled-components';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
-const Container = styled.div`
-  margin: 0;
-  padding: 0;
-  width: 80%;
-  height: 46vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-`;
-
-const SubContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  :nth-child(2) {
-    margin: 20px 0px;
-  }
-`;
-
-const Subheading = styled.span`
-  text-align: center;
-  font-size: 12px;
-  font-weight: 400;
-  background-color: rgba(255, 255, 255, 0.6);
-  padding: 7px 0px;
-  border-radius: 10px;
-  color: 'black';
-`;
+import {
+  Container,
+  SubContainer,
+  LocationDiv,
+  Locationheading,
+  SwapButton,
+  InputDiv,
+  DataInputheading,
+  DataInputDiv,
+  SearchButton,
+  StyledLink,
+} from './ TicketReservation';
 
 function FlightStatus() {
   //출발일 선택 제한을 위한 현재 날짜 불러오기
@@ -75,8 +53,7 @@ function FlightStatus() {
   return (
     <Container>
       <SubContainer>
-        <div>
-          <Subheading>출발지</Subheading>
+        <LocationDiv>
           <select
             value={departure}
             onChange={(e) => handleDepartureChange(e.target.value)}
@@ -90,12 +67,12 @@ function FlightStatus() {
             <option value="TAE">DAEQU</option>
             <option value="USN">ULSAN</option>
           </select>
-        </div>
+          <Locationheading>출발지</Locationheading>
+        </LocationDiv>
 
-        <button onClick={() => swapDepartureDestination()}>Swap</button>
+        <SwapButton onClick={() => swapDepartureDestination()}></SwapButton>
 
-        <div>
-          <Subheading>도착지</Subheading>
+        <LocationDiv>
           <select
             value={destination}
             onChange={(e) => handleDestinationChange(e.target.value)}
@@ -109,11 +86,12 @@ function FlightStatus() {
             <option value="TAE">DAEQU</option>
             <option value="USN">ULSAN</option>
           </select>
-        </div>
+          <Locationheading>도착지</Locationheading>
+        </LocationDiv>
       </SubContainer>
-      <SubContainer>
-        <div>
-          <Subheading>출발일</Subheading>
+      <InputDiv>
+        <DataInputheading>출발일</DataInputheading>
+        <DataInputDiv>
           <input
             type="date"
             value={date}
@@ -121,17 +99,16 @@ function FlightStatus() {
             min={todayISOString}
             max="2023-12-31"
           />
-        </div>
-      </SubContainer>
+        </DataInputDiv>
+      </InputDiv>
 
-      <Link
+      <StyledLink
         to={{
-          pathname: '/FlightSearch',
-          search: `?departure=${departure}&destination=${destination}&date=${date}`,
+          pathname: '/FlightSelect/Reservation',
         }}
       >
-        <button onClick={handleSearch}>Search</button>
-      </Link>
+        <SearchButton onClick={handleSearch}>조회하기</SearchButton>
+      </StyledLink>
     </Container>
   );
 }

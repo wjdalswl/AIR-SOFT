@@ -1,12 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
+import { TicketProps } from '../../api';
 
 const Container = styled.div`
+  margin: 0;
   width: 100%;
-  height: 500vh;
+  height: 175vh;
   display: flex;
-  padding-top: 60px;
+  flex-direction: column;
+  align-items: center;
+  background-color: #677486;
+`;
+
+const SubContainer = styled.div`
+  margin: 0;
+  padding-top: 50px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 90vh;
+  background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1748&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  display: flex;
   flex-direction: column;
   align-items: center;
 `;
@@ -73,42 +89,46 @@ const columnToLetter = (column: number): string => {
   return columnName;
 };
 
-interface LocationState {
-  flightDetails?: {
-    airline: string;
-    departureTime: string;
-    departureAirport: string;
-    flightNumber: string;
-    flightDay: string;
-    startDate: string;
-    arrivalTime: string;
-    arrivalAirport: string;
-    passengerCount: number;
-    date: string;
-    seatClass: string;
-  };
-}
-
-// ... (이전 코드)
-
 function SeatSelection() {
   const history = useHistory();
-  const location = useLocation<LocationState>();
+  const location = useLocation<TicketProps>();
 
   const rows = 10;
   const columns = 5;
 
-  const initialIsOccupied = Array.from(
-    { length: rows * columns },
-    () => Math.random() < 0.2
-  );
-  const [isOccupied, setIsOccupied] = useState(initialIsOccupied);
+  const [isOccupied, setIsOccupied] = useState<Array<boolean>>([]);
   const [selectedSeats, setSelectedSeats] = useState<
     { row: number; column: number }[]
   >([]);
 
-  const { flightDetails } = location.state || {};
-  const passengerCount = flightDetails?.passengerCount;
+  const { SeatData } = location.state || {};
+  const passengerCount = SeatData?.passengerCount;
+  const seatClass = SeatData?.flightData[0]?.seatClass;
+
+  const isBusinessClass = seatClass === 'business';
+
+  useEffect(() => {
+    const fetchAndSetOccupancyData = async () => {
+      try {
+        const occupancyData = await fetchSeatOccupancyDataFromServer();
+        const initialIsOccupied = generateInitialIsOccupied(
+          rows,
+          columns,
+          isBusinessClass,
+          occupancyData
+        );
+        setIsOccupied(initialIsOccupied);
+      } catch (error) {
+        console.error(
+          'Error fetching or setting occupancy data:',
+          error.message
+        );
+        // Handle error appropriately
+      }
+    };
+
+    fetchAndSetOccupancyData();
+  }, [rows, columns, isBusinessClass]);
 
   const isSeatSelected = (row: number, column: number) => {
     return selectedSeats.some(
@@ -149,7 +169,7 @@ function SeatSelection() {
     // 선택한 좌석 정보를 쿼리 파라미터로 전달하여 결제 페이지로 이동
     if (selectedSeats.length === passengerCount) {
       const selectedSeatStrings = selectedSeats.map(
-        (seat) => `${columnToLetter(seat.column)}-${seat.row}`
+        (seat) => `${columnToLetter(seat.row)}-${seat.column}`
       );
 
       const queryParams = {
@@ -164,35 +184,33 @@ function SeatSelection() {
       });
     }
   };
-
-  return (
-    <Container>
-      <IMGContainer>
-        {Array.from({ length: rows }, (_, rowIndex) => (
-          <SeatRow key={rowIndex}>
-            {Array.from({ length: columns }, (_, columnIndex) => (
-              <React.Fragment key={columnIndex}>
-                {columnToLetter(columnIndex + 1) === 'C' && <Passage />}
-                <SeatButton
-                  onClick={() => handleSeatClick(rowIndex + 1, columnIndex + 1)}
-                  isOccupied={isOccupied[rowIndex * columns + columnIndex]}
-                  isSelected={isSeatSelected(rowIndex + 1, columnIndex + 1)}
-                >
-                  {`${columnToLetter(columnIndex + 1)}-${rowIndex + 1}`}
-                </SeatButton>
-              </React.Fragment>
-            ))}
-          </SeatRow>
-        ))}
-      </IMGContainer>
-      <PaymentButton
-        disabled={selectedSeats.length !== passengerCount}
-        onClick={handlePaymentClick}
-      >
-        결제하기
-      </PaymentButton>
-    </Container>
-  );
 }
-
 export default SeatSelection;
+
+//페이지 생성시 현재 좌석 상태 업로드
+const generateInitialIsOccupied = (
+  rows: number,
+  columns: number,
+  isBusinessClass: boolean,
+  occupancyData: SeatStatusResponseDTO[]
+) => {
+  const initialIsOccupied = Array.from({ length: rows * columns }, () => false);
+
+  if (occupancyData && Array.isArray(occupancyData)) {
+    occupancyData.forEach((seat) => {
+      const { row, column, isOccupied } = seat;
+      const columnIndex = column.charCodeAt(0) - 'A'.charCodeAt(0);
+      const seatIndex = (row - 1) * columns + columnIndex;
+
+      if (seatIndex >= 0 && seatIndex < rows * columns) {
+        if (isBusinessClass && columnIndex === 0) {
+          initialIsOccupied[seatIndex] = isOccupied;
+        } else if (!isBusinessClass && columnIndex >= 1 && columnIndex <= 9) {
+          initialIsOccupied[seatIndex] = isOccupied;
+        }
+      }
+    });
+  }
+
+  return initialIsOccupied;
+};

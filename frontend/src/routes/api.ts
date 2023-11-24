@@ -17,15 +17,30 @@ export interface ApiResponse {
 }
 
 export interface FlightData {
-  항공사: string;
-  운항편명: string;
-  출발공항: string;
-  도착공항: string;
-  출발시간: string;
-  도착시간: string;
-  운항요일: string;
-  시작일자: string;
-  종료일자: string;
+  arrivalAirport: string;
+  arrivalTime: string;
+  departureAirport: string;
+  departureTime: string;
+  flightNumber: string;
+  id: number;
+  seatClass: string;
+  seatsTotal: number;
+}
+
+export interface SeatData {
+  paymentType: string;
+  flightData: FlightData[];
+  passengerCount: number;
+  paymentAmount: number;
+}
+
+export interface TicketProps {
+  SeatData: {
+    flightData: FlightData[];
+    passengerCount: number;
+    paymentAmount: number;
+  };
+  selectedSeats?: string[] | string;
 }
 
 export function fetchFlight(): Promise<ApiResponse> {

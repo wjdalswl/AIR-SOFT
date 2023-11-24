@@ -1,24 +1,24 @@
 import { styled } from 'styled-components';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-const Container = styled.div`
+export const Container = styled.div`
   margin: 0;
-  padding: 0;
+  padding: 15px;
   width: 80%;
   height: 46vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   background-color: rgba(255, 255, 255, 0.5);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 `;
 const PaymentTypeButtons = styled.div`
-  margin-left: 100px;
+  margin-left: -290px;
   margin-right: auto;
-  display: inline-flex;
-  align-items: center;
   border-radius: 20px;
   border: 1px solid #8091ab;
   padding: 0;
@@ -31,29 +31,52 @@ interface PaymentTypeButtonProps {
 
 const PaymentTypeButton = styled.button<PaymentTypeButtonProps>`
   margin: 0;
+  padding: 5px 7px;
   border: none;
   border-radius: 20px;
   background-color: ${(props) =>
     props.isMileageReservation ? 'rgba(128, 145, 171, 0.82)' : 'transparent'};
 `;
 
-const SwapButton = styled.button`
+export const LocationDiv = styled.div`
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & select {
+    border: 0;
+    background: none;
+    font-size: 23px;
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+`;
+
+export const Locationheading = styled.span`
+  margin-top: 10px;
+`;
+
+export const SwapButton = styled.button`
   width: 80px;
   height: 80px;
   border: none;
-  background-image: url('/images/swapbutton.png'); /* 이미지 경로로 변경 */
+  background-image: url('/images/swapbutton.png');
   background-color: transparent;
-  background-size: cover; /* 이미지를 버튼에 맞게 조절 */
+  background-size: cover;
   background-repeat: no-repeat;
 `;
 
-const SubContainer = styled.div`
+export const SubContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 15px;
 `;
 
-const DataInputheading = styled.span`
+export const DataInputheading = styled.span`
   text-align: center;
   font-size: 12px;
   font-weight: 400;
@@ -64,19 +87,19 @@ const DataInputheading = styled.span`
   color: 'black';
 `;
 
-const DataInputDiv = styled.div`
+export const DataInputDiv = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0;
 `;
 
-const InputDiv = styled.div`
+export const InputDiv = styled.div`
   width: 150px;
   display: flex;
   flex-direction: column;
   align-items: start;
-  margin-right: 50px;
-  margin-left: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
   border-bottom: 1px solid #8091ab;
 
   & ${DataInputDiv} {
@@ -119,7 +142,7 @@ const InputDiv = styled.div`
   }
 `;
 
-const StyledLink = styled(Link)`
+export const StyledLink = styled(Link)`
   text-decoration: none;
   color: white;
   margin-top: 10px;
@@ -127,7 +150,7 @@ const StyledLink = styled(Link)`
   margin-right: 25px;
 `;
 
-const SearchButton = styled.button`
+export const SearchButton = styled.button`
   background-color: rgba(128, 145, 171, 0.82);
   width: 120px;
   color: white;
@@ -143,6 +166,7 @@ const SearchButton = styled.button`
 
 function TicketReservation() {
   //출발일 선택 제한을 위한 현재 날짜 불러오기
+  const history = useHistory();
   const today = new Date();
   const todayISOString = today.toISOString().split('T')[0];
 
@@ -155,6 +179,10 @@ function TicketReservation() {
 
   const handlePaymentTypeChange = (type: string) => {
     setPaymentType(type);
+
+    if (type === 'MileageReservation') {
+      setPassengerCount(1);
+    }
   };
 
   const handleDepartureChange = (value: string) => {
@@ -180,18 +208,44 @@ function TicketReservation() {
   const handleSearch = () => {
     // 조회 기능 구현
     const queryParams = new URLSearchParams({
-      paymentType,
-      departure: departure || 'GMP',
-      destination: destination || 'PUS',
+      departure,
+      destination,
       date: date || todayISOString,
-      passengerCount: passengerCount.toString(),
-      seatClass: seatClass || 'economy',
+      seatClass,
     });
+
+    const apiUrl = `/api/FlightSelect?${queryParams.toString()}`;
+
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const queryParams = {
+          paymentType: paymentType,
+          flightData: data,
+          passengerCount: passengerCount,
+        };
+
+        history.push({
+          pathname: '/FlightSelect',
+          state: queryParams,
+        });
+      })
+      .catch((error) => {
+        // 에러 처리
+        console.error(
+          'There has been a problem with your fetch operation:',
+          error
+        );
+      });
   };
 
   //출발지와 도착지 바꾸는 버튼
   const swapDepartureDestination = () => {
-    // Swap the values of departure and destination
     const temp = departure;
     handleDepartureChange(destination);
     handleDestinationChange(temp);
@@ -217,8 +271,7 @@ function TicketReservation() {
       </SubContainer>
 
       <SubContainer>
-        <div>
-          <DataInputheading>출발지</DataInputheading>
+        <LocationDiv>
           <select
             value={departure}
             onChange={(e) => handleDepartureChange(e.target.value)}
@@ -232,12 +285,12 @@ function TicketReservation() {
             <option value="TAE">DAEQU</option>
             <option value="USN">ULSAN</option>
           </select>
-        </div>
+          <Locationheading>출발지</Locationheading>
+        </LocationDiv>
 
         <SwapButton onClick={() => swapDepartureDestination()}></SwapButton>
 
-        <div>
-          <DataInputheading>도착지</DataInputheading>
+        <LocationDiv>
           <select
             value={destination}
             onChange={(e) => handleDestinationChange(e.target.value)}
@@ -251,7 +304,8 @@ function TicketReservation() {
             <option value="TAE">DAEQU</option>
             <option value="USN">ULSAN</option>
           </select>
-        </div>
+          <Locationheading>도착지</Locationheading>
+        </LocationDiv>
       </SubContainer>
       <SubContainer>
         <InputDiv>
@@ -278,6 +332,8 @@ function TicketReservation() {
               onChange={(e) =>
                 handlePassengerCountChange(Number(e.target.value))
               }
+              min={1}
+              max={paymentType === 'MileageReservation' ? 1 : undefined}
             />
           </DataInputDiv>
         </InputDiv>
@@ -291,7 +347,7 @@ function TicketReservation() {
               onChange={(e) => handleSeatClassChange(e.target.value)}
             >
               <option value="economy">이코노미석</option>
-              <option value="first-class">1등석</option>
+              <option value="business">비즈니스석</option>
             </select>
           </DataInputDiv>
         </InputDiv>
@@ -299,8 +355,8 @@ function TicketReservation() {
 
       <StyledLink
         to={{
-          pathname: '/FlightSelect/Reservation',
-          search: `?paymentType=${paymentType}&departure=${departure}&destination=${destination}&date=${date}&passengerCount=${passengerCount}&seatClass=${seatClass}`,
+          pathname: '/FlightSelect',
+          search: `?&departure=${departure}&destination=${destination}&date=${date}&seatClass=${seatClass}`,
         }}
       >
         <SearchButton onClick={handleSearch}>항공편 검색</SearchButton>

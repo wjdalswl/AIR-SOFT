@@ -53,14 +53,6 @@ function FlightSearch() {
       try {
         const response = await fetchFlight();
         if (response.data) {
-          const filteredData = response.data.filter((item) => {
-            return (
-              item.항공사 === 'KAL' &&
-              item.출발공항 === departure &&
-              item.도착공항 === destination
-            );
-          });
-          setFlightData(filteredData);
         }
       } catch (error) {
         console.error('API 호출 오류:', error);
@@ -76,21 +68,6 @@ function FlightSearch() {
         {flightData.length > 0 ? (
           <div>
             <h3>항공편 조회 결과</h3>
-
-            <FlightList>
-              {flightData.map((flight, index) => (
-                <Flight key={index}>
-                  <span>{flight.항공사}☺️</span>
-                  <span>{flight.출발시간}☺️</span>
-                  <span>{flight.출발공항}☺️</span>
-                  <span>{flight.운항편명}☺️</span>
-                  <span>{flight.운항요일}☺️</span>
-                  <span>{flight.시작일자}☺️</span>
-                  <span>{flight.도착시간}☺️</span>
-                  <span>{flight.도착공항}☺️</span>
-                </Flight>
-              ))}
-            </FlightList>
           </div>
         ) : (
           <p>일치하는 데이터가 없습니다.</p>
