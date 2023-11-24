@@ -118,7 +118,7 @@ function SeatSelection() {
           occupancyData
         );
         setIsOccupied(initialIsOccupied);
-      } catch (error) {
+      } catch (error: any) {
         console.error(
           'Error fetching or setting occupancy data:',
           error.message
@@ -184,10 +184,62 @@ function SeatSelection() {
       });
     }
   };
+
+  return (
+    <Container>
+      <IMGContainer>
+        {Array.from({ length: rows }, (_, rowIndex) => (
+          <SeatRow key={rowIndex}>
+            {Array.from({ length: columns }, (_, columnIndex) => (
+              <React.Fragment key={columnIndex}>
+                {columnToLetter(columnIndex + 1) === 'C' && <Passage />}
+                <SeatButton
+                  onClick={() => handleSeatClick(rowIndex + 1, columnIndex + 1)}
+                  isOccupied={isOccupied[rowIndex * columns + columnIndex]}
+                  isSelected={isSeatSelected(rowIndex + 1, columnIndex + 1)}
+                >
+                  {`${columnToLetter(columnIndex + 1)}-${rowIndex + 1}`}
+                </SeatButton>
+              </React.Fragment>
+            ))}
+          </SeatRow>
+        ))}
+      </IMGContainer>
+      <PaymentButton
+        disabled={selectedSeats.length !== passengerCount}
+        onClick={handlePaymentClick}
+      >
+        결제하기
+      </PaymentButton>
+    </Container>
+  );
 }
 export default SeatSelection;
 
-//페이지 생성시 현재 좌석 상태 업로드
+// API에서 좌석 점유 데이터를 가져오는 함수
+const fetchSeatOccupancyDataFromServer = async () => {
+  try {
+    const response = await fetch('/api/SeatSearch'); // API 엔드포인트에 맞게 수정 필요
+    if (!response.ok) {
+      throw new Error('데이터를 불러오는 데 실패했습니다.');
+    }
+
+    const data = await response.json();
+    return data; // 서버로부터 받은 좌석 점유 데이터 배열을 반환
+  } catch (error: any) {
+    console.error('데이터를 가져오는 도중 에러가 발생했습니다:', error.message);
+    // 에러 처리 로직 추가
+  }
+};
+
+// 좌석 상태 응답 DTO 정의
+interface SeatStatusResponseDTO {
+  row: number;
+  column: string;
+  isOccupied: boolean;
+}
+
+// 페이지 생성시 현재 좌석 상태 업로드 함수
 const generateInitialIsOccupied = (
   rows: number,
   columns: number,
