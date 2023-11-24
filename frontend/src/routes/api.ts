@@ -27,6 +27,22 @@ export interface FlightData {
   seatsTotal: number;
 }
 
+export interface SeatData {
+  paymentType: string;
+  flightData: FlightData[];
+  passengerCount: number;
+  paymentAmount: number;
+}
+
+export interface TicketProps {
+  SeatData: {
+    flightData: FlightData[];
+    passengerCount: number;
+    paymentAmount: number;
+  };
+  selectedSeats?: string[] | string;
+}
+
 export function fetchFlight(): Promise<ApiResponse> {
   return fetch(`${BASE_URL}`).then((response) => response.json());
 }

@@ -14,7 +14,7 @@ import ReservationInquiry from './ReservationInquiry';
 import CheckIn from './CheckIn';
 import FlightStatus from './FlightStatus';
 
-const Container = styled.div`
+export const Container = styled.div`
   margin: 0;
   width: 100%;
   height: 175vh;
@@ -38,7 +38,7 @@ const SubContainer = styled.div`
   align-items: center;
 `;
 
-const Header = styled.header`
+export const Header = styled.header`
   padding-top: 50px;
   margin-bottom: 30px;
   font-size: 40px;
@@ -109,7 +109,6 @@ const AdSpan = styled.div`
   margin-right: -10px;
   z-index: 2;
   bottom: 10px;
-  /* transform: translateX(10%); */
   width: 200px;
   padding: 5px;
   background-color: rgba(255, 255, 255, 0.5);

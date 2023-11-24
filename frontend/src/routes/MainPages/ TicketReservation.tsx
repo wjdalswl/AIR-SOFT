@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 export const Container = styled.div`
   margin: 0;
@@ -62,9 +63,9 @@ export const SwapButton = styled.button`
   width: 80px;
   height: 80px;
   border: none;
-  background-image: url('/images/swapbutton.png'); /* 이미지 경로로 변경 */
+  background-image: url('/images/swapbutton.png');
   background-color: transparent;
-  background-size: cover; /* 이미지를 버튼에 맞게 조절 */
+  background-size: cover;
   background-repeat: no-repeat;
 `;
 
@@ -165,6 +166,7 @@ export const SearchButton = styled.button`
 
 function TicketReservation() {
   //출발일 선택 제한을 위한 현재 날짜 불러오기
+  const history = useHistory();
   const today = new Date();
   const todayISOString = today.toISOString().split('T')[0];
 
@@ -174,7 +176,6 @@ function TicketReservation() {
   const [date, setDate] = useState<string | undefined>(todayISOString);
   const [passengerCount, setPassengerCount] = useState(1);
   const [seatClass, setSeatClass] = useState('economy');
-  const [searchResults, setSearchResults] = useState([]);
 
   const handlePaymentTypeChange = (type: string) => {
     setPaymentType(type);
@@ -223,8 +224,16 @@ function TicketReservation() {
         return response.json();
       })
       .then((data) => {
-        setSearchResults(data);
-        console.log('Flight Data1111:', data);
+        const queryParams = {
+          paymentType: paymentType,
+          flightData: data,
+          passengerCount: passengerCount,
+        };
+
+        history.push({
+          pathname: '/FlightSelect',
+          state: queryParams,
+        });
       })
       .catch((error) => {
         // 에러 처리
@@ -237,7 +246,6 @@ function TicketReservation() {
 
   //출발지와 도착지 바꾸는 버튼
   const swapDepartureDestination = () => {
-    // Swap the values of departure and destination
     const temp = departure;
     handleDepartureChange(destination);
     handleDestinationChange(temp);
@@ -347,13 +355,8 @@ function TicketReservation() {
 
       <StyledLink
         to={{
-          pathname: '/FlightSelect/Reservation',
+          pathname: '/FlightSelect',
           search: `?&departure=${departure}&destination=${destination}&date=${date}&seatClass=${seatClass}`,
-          state: {
-            paymentType: paymentType,
-            flightData: searchResults,
-            passengerCount: passengerCount,
-          },
         }}
       >
         <SearchButton onClick={handleSearch}>항공편 검색</SearchButton>
