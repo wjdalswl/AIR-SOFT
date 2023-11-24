@@ -105,6 +105,11 @@ public class FlightService {
 
     private boolean isOperatingOnDay(Flight flight, DayOfWeek dayOfWeek) {
         String operatingDays = flight.getOperatingDay();
+
+        if (operatingDays.equals("매일")) {
+            return true;
+        }
+
         switch (dayOfWeek) {
             case MONDAY:
                 return operatingDays.contains("월");
