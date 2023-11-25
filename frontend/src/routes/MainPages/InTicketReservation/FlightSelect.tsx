@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { FlightData, SeatData } from '../../api';
 import { Locationheading, LocationDiv } from '../ TicketReservation';
+import { getToken } from '../../token';
 
 export const Container = styled.div`
   margin: 0;
@@ -97,9 +98,10 @@ const Title = styled.h1`
 `;
 
 function FlightSelect() {
+  const history = useHistory();
   const location = useLocation<SeatData>();
   const searchResults = location.state?.flightData || [];
-
+  console.log(searchResults);
   const [paymentType, setPaymentType] = useState<string>('Reservation');
   const [flightData, setFlightData] = useState<FlightData[]>([]);
   const [passengerCount, setPassengerCount] = useState<number>(1);
@@ -143,6 +145,27 @@ function FlightSelect() {
     }
   }, [location.state, searchResults, passengerCount, paymentType]);
 
+  const handleLinkClick = (flight: FlightData) => {
+    console.log('flight:', flight);
+    console.log('paymentType:', paymentType);
+    console.log('passengerCount:', passengerCount);
+    console.log('paymentAmount:', paymentAmount);
+
+    const token = getToken();
+
+    // 토큰 없으면 로그인 페이지 이동
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      history.push('/');
+      return;
+    } else {
+      // 토큰 있으면 좌석 선택 페이지 이동
+      history.push({
+        pathname: `/SeatSelection`,
+      });
+    }
+  };
+
   return (
     <Container>
       {flightData.length > 0 ? (
@@ -161,6 +184,7 @@ function FlightSelect() {
                       paymentAmount: paymentAmount,
                     },
                   }}
+                  onClick={() => handleLinkClick(flight)}
                 >
                   <SubContainer1>
                     <FlightNumber>{flight.flightNumber}</FlightNumber>

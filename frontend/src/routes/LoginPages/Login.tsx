@@ -1,16 +1,12 @@
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { StyledLink, SearchButton } from '../MainPages/ TicketReservation';
+import { saveToken } from '../token';
 
 const Container = styled.div`
   padding-top: 60px;
 `;
-
-interface LoginProps {
-  onLogin: (username: string, password: string) => void;
-}
 
 function Login() {
   const loginhistory = useHistory();
@@ -51,8 +47,8 @@ function Login() {
       .then((data) => {
         console.log('Server response:', data);
 
-        const token = data.token;
-        localStorage.setItem('token', token);
+        const receivedToken = data.token;
+        saveToken(receivedToken);
 
         // 로그인 정보 비교 완료되면 로그인 페이지로 이동
         loginhistory.push('/');

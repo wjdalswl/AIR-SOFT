@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
+import { getToken } from './token';
 
 const StatusBarWrapper = styled.div`
   position: fixed;
@@ -60,6 +61,12 @@ function TopBar() {
     path: '/Login',
     exact: true,
   });
+  const MyPageMatch = useRouteMatch({
+    path: '/MyPage',
+    exact: true,
+  });
+
+  const token = getToken();
 
   return (
     <>
@@ -85,9 +92,17 @@ function TopBar() {
         </StatusBarColumn>
 
         <StatusBarColumn>
-          <Tab isActive={LoginMatch !== null}>
-            <Link to={`/Login`}>로그인</Link>
-          </Tab>
+          {token ? (
+            // 토큰이 있을 때
+            <Tab isActive={MyPageMatch !== null}>
+              <Link to="/MyPage">마이페이지</Link>
+            </Tab>
+          ) : (
+            // 토큰이 없을 때
+            <Tab isActive={LoginMatch !== null}>
+              <Link to={`/Login`}>로그인</Link>
+            </Tab>
+          )}
         </StatusBarColumn>
       </StatusBarWrapper>
     </>
