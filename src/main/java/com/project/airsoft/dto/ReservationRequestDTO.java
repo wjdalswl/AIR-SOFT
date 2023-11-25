@@ -4,6 +4,7 @@ import com.project.airsoft.domain.FlightSchedule;
 import com.project.airsoft.domain.Reservation;
 import com.project.airsoft.domain.User;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

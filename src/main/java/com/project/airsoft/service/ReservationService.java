@@ -5,6 +5,8 @@ import com.project.airsoft.domain.Reservation;
 import com.project.airsoft.domain.Seats;
 import com.project.airsoft.domain.User;
 import com.project.airsoft.dto.ReservationRequestDTO;
+import com.project.airsoft.dto.ReservationSearchResponseDTO;
+import com.project.airsoft.exception.SeatAlreadyReservedException;
 import com.project.airsoft.repository.FlightScheduleRepository;
 import com.project.airsoft.repository.ReservationRepository;
 import com.project.airsoft.repository.SeatsRepository;
@@ -65,6 +67,10 @@ public class ReservationService {
             Seats seat = seatsRepository.findByFlightScheduleAndSeatClassAndSeatRowAndSeatLetter(flightSchedule,
                     seatClass,
                     seatRowList.get(i), seatLetterList.get(i));
+            // 좌석이 이미 예약되었는지 확인
+            if (!seat.isAvailable()) {
+                throw new SeatAlreadyReservedException("좌석 " + seatRowList.get(i) + "-" + seatLetterList.get(i) + "은(는) 이미 예약되었습니다.");
+            }
 
             // 예약 생성 및 저장
             Reservation reservation = Reservation.builder()
@@ -91,10 +97,11 @@ public class ReservationService {
         flightScheduleRepository.save(flightSchedule.get());
     }
 
-    // 필요에 따라 가격 계산 로직을 추가할 수 있습니다.
-//    private int calculatePrice(Price price, String seatClass, int passengers) {
-//        // 가격 계산 로직을 추가하시면 됩니다.
-//        // 예시: 기본 가격 * 승객 수
-//        return price.getBasePrice() * passengers;
-//    }
+    public Reservation searchReservation(String code) {
+        return reservationRepository.findById(code);
+    }
+
+    public Reservation searchReservation(User user) {
+        return reservationRepository.findByUser(user);
+    }
 }
