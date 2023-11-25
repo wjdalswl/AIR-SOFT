@@ -9,22 +9,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import java.time.LocalDate;
+import javax.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.RandomStringUtils;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private LocalDate departureDate;
 
@@ -44,4 +47,12 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private FlightSchedule flightSchedule;
+
+    @PrePersist
+    public void generateId() {
+        if (this.id != null) {
+            throw new RuntimeException("id가 있는 경우엔 새로운 id를 생성할 수 없습니다.");
+        }
+        this.id = RandomStringUtils.randomAlphanumeric(6);
+    }
 }
