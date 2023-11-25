@@ -145,10 +145,9 @@ function FlightSelect() {
                 <Link
                   to={{
                     pathname: `/SeatSelection`,
-                    search: `?&SeatSelection=${flight.id}&seatClass=${flight.seatClass}`,
                     state: {
                       paymentType: paymentType,
-                      flightData: flightData,
+                      flightData: [flight],
                       passengerCount: passengerCount,
                       paymentAmount: paymentAmount,
                     },
