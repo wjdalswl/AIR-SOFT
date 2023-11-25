@@ -16,6 +16,17 @@ export const Container = styled.div`
   background-color: #677486;
 `;
 
+const SubContainer1 = styled.div`
+  margin-bottom: 20px;
+  margin-bottom: 10px;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const SubContainer = styled.div`
   margin-bottom: 20px;
   margin-bottom: 10px;
@@ -63,8 +74,6 @@ const Flight = styled.li`
   }
 `;
 const FlightNumber = styled.div`
-  margin-left: 25px;
-  margin-right: auto;
   background-color: rgba(255, 255, 255, 0.5);
   padding: 3px 5px;
   border-radius: 20px;
@@ -153,9 +162,10 @@ function FlightSelect() {
                     },
                   }}
                 >
-                  <SubContainer>
+                  <SubContainer1>
                     <FlightNumber>{flight.flightNumber}</FlightNumber>
-                  </SubContainer>
+                    <span>{flight.departureDate}</span>
+                  </SubContainer1>
                   <SubContainer>
                     <LocationDiv>
                       <TimeSpan>{departureTimes[index]}</TimeSpan>

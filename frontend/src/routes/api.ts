@@ -25,6 +25,7 @@ export interface FlightData {
   id: number;
   seatClass: string;
   seatsTotal: number;
+  departureDate: string;
 }
 
 export interface SeatData {

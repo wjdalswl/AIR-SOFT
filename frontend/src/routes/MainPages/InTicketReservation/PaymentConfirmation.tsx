@@ -124,6 +124,7 @@ function PaymentConfirmation() {
         <div>
           <h3>항공편 정보</h3>
           <p>항공편명: {flightDataState?.flightData[0]?.flightNumber}</p>
+          <p>출발날짜: {flightDataState?.flightData[0]?.departureDate}</p>
           <p>출발공항: {flightDataState?.flightData[0]?.arrivalAirport}</p>
           <p>출발시간: {departureTimes[0]}</p>
           <p>도착공항: {flightDataState?.flightData[0]?.departureAirport}</p>
