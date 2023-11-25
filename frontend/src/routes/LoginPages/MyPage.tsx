@@ -10,6 +10,21 @@ function MyPage() {
   const history = useHistory();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!token);
 
+  fetch('/my-page', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Server response MyPagedata:', data);
+    })
+    .catch((error) => {
+      console.error('Error sending MyPagedata to server:', error);
+    });
+
   const handleLogout = () => {
     // 로그아웃 시 로컬 스토리지의 토큰을 제거합니다.
     if (token) {
