@@ -1,6 +1,8 @@
 package com.project.airsoft.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,7 +55,7 @@ public class User implements Serializable {
 
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Reservation> reservation;
 
     public void setReservation(List<Reservation> reservation) {

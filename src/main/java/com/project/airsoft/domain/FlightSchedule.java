@@ -1,5 +1,9 @@
 package com.project.airsoft.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,7 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FlightSchedule {
+public class FlightSchedule implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,9 +53,11 @@ public class FlightSchedule {
     private Long seatsTotal;
 
     @OneToMany(mappedBy = "flightSchedule")
+    @JsonManagedReference
     private List<Seats> seatsList;
 
     @OneToMany(mappedBy = "flightSchedule")
+    @JsonIgnore
     private List<Reservation> reservationList;
 
     @OneToOne(fetch = FetchType.LAZY)

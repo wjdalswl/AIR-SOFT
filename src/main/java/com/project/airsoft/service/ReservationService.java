@@ -5,7 +5,6 @@ import com.project.airsoft.domain.Reservation;
 import com.project.airsoft.domain.Seats;
 import com.project.airsoft.domain.User;
 import com.project.airsoft.dto.ReservationRequestDTO;
-import com.project.airsoft.dto.ReservationSearchResponseDTO;
 import com.project.airsoft.exception.SeatAlreadyReservedException;
 import com.project.airsoft.repository.FlightScheduleRepository;
 import com.project.airsoft.repository.ReservationRepository;
@@ -93,7 +92,7 @@ public class ReservationService {
         }
 
         // 예약된 좌석 수 업데이트
-        flightSchedule.get().setSeatsTotal(flightSchedule.get().getSeatsTotal() - passengers);
+        flightSchedule.get().setSeatsTotal(flightSchedule.get().getSeatsTotal(seatClass) - passengers);
         flightScheduleRepository.save(flightSchedule.get());
     }
 
