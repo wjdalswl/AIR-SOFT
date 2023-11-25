@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { TicketProps } from '../../api';
+import { PaymentButton } from './ SeatSelection';
+import { StyledLink } from '../ TicketReservation';
 
 const Container = styled.div`
   width: 100%;
@@ -11,47 +14,59 @@ const Container = styled.div`
   align-items: center;
 `;
 
-interface LocationState {
-  flightDetails?: {
-    airline: string;
-    departureTime: string;
-    departureAirport: string;
-    flightNumber: string;
-    flightDay: string;
-    startDate: string;
-    arrivalTime: string;
-    arrivalAirport: string;
-    passengerCount: number;
-    date: string;
-    seatClass: string;
-  };
-  selectedSeats?: string[] | string;
-}
-
 function PaymentConfirmation() {
-  const location = useLocation<LocationState>();
+  const location = useLocation<TicketProps>();
   const history = useHistory();
 
-  const [flightDetails, setFlightDetails] = useState<
-    LocationState['flightDetails'] | undefined
-  >(undefined);
+  const { flightData, paymentType, passengerCount, paymentAmount } =
+    location.state || {};
+  const [flightDataState, setFlightDataState] = useState<TicketProps>({
+    flightData: flightData || [],
+    paymentType: paymentType || '',
+    passengerCount: passengerCount || 0,
+    paymentAmount: paymentAmount || 0,
+  });
+  const [arrivalTimes, setArrivalTimes] = useState<string[]>([]);
+  const [departureTimes, setDepartureTimes] = useState<string[]>([]);
+
   const [selectedSeats, setSelectedSeats] = useState<
     string[] | string | undefined
-  >(undefined);
+  >(location.state?.selectedSeats);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    // 페이지가 마운트될 때 location.state에서 데이터를 가져옴
-    if (location.state?.flightDetails) {
-      setFlightDetails(location.state.flightDetails);
+    if (location.state?.flightData) {
+      setFlightDataState(location.state);
 
-      // Ensure selectedSeats is a string before calling split
       const seatsString = location.state.selectedSeats || '';
       setSelectedSeats(
         Array.isArray(seatsString) ? seatsString : seatsString.split(',')
       );
+      const formattedArrivalTimes = location.state.flightData.map((flight) => {
+        const arrivalDateTime = new Date(flight.arrivalTime);
+
+        return arrivalDateTime.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      });
+
+      const formattedDepartureTimes = location.state.flightData.map(
+        (flight) => {
+          const departureDateTime = new Date(flight.departureTime);
+
+          return departureDateTime.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+        }
+      );
+
+      setArrivalTimes(formattedArrivalTimes);
+      setDepartureTimes(formattedDepartureTimes);
     } else {
       // 데이터가 없으면 홈페이지로 이동
+      alert(`데이터가 존재하지 않습니다.`);
       history.push('/');
     }
   }, [location.state, history]);
@@ -60,27 +75,55 @@ function PaymentConfirmation() {
     setIsCheckboxChecked(!isCheckboxChecked);
   };
 
-  const calculateTotalAmount = () => {
-    const basePrice = flightDetails?.seatClass === '이코노미' ? 100000 : 150000;
-    const totalAmount = basePrice * (flightDetails?.passengerCount || 0);
-    return totalAmount;
-  };
-
   const handleTicketPurchase = () => {
     // 티켓 발매 로직을 여기에 추가
-    // 예: alert을 통해 구매 완료 메시지 표시
-    const totalAmount = calculateTotalAmount();
-    alert(`티켓 발매가 완료되었습니다. 총 금액: ${totalAmount}원`);
+    // alert을 통해 구매 완료 메시지 표시
+    alert(
+      `티켓 발매가 완료되었습니다. 총 금액: ${flightDataState?.paymentAmount}원`
+    );
 
-    const queryParams = {
-      ...location.state,
-      totalAmount: totalAmount, // Optionally, you can include the total amount in queryParams
+    const formattedSelectedSeats =
+      location.state.selectedSeats &&
+      (typeof location.state.selectedSeats === 'string'
+        ? [location.state.selectedSeats]
+        : location.state.selectedSeats.map((seat) => {
+            const [column, row] = seat.split('-');
+            return `${row}-${column}`;
+          }));
+
+    const ticketData = {
+      userId: 1,
+
+      flightId: location.state.flightData[0].id,
+
+      seatClass: location.state.flightData[0].seatClass,
+
+      passengers: location.state.passengerCount,
+
+      selectedSeats: formattedSelectedSeats,
     };
+    console.log(ticketData);
+    // 서버로 POST 요청
+    fetch('/api/reservations/reserve', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ticketData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Server response:', data);
 
-    history.push({
-      pathname: '/ticket',
-      state: queryParams,
-    });
+        // 티켓 발매가 완료되면 Ticket 페이지로 이동
+        history.push({
+          pathname: '/Ticket',
+          state: location.state,
+        });
+      })
+      .catch((error) => {
+        console.error('Error sending data to server:', error);
+      });
   };
 
   return (
@@ -89,13 +132,14 @@ function PaymentConfirmation() {
         <h2>결제 확인 페이지</h2>
         <div>
           <h3>항공편 정보</h3>
-          <p>항공사: {flightDetails?.airline}</p>
-          <p>출발시간: {flightDetails?.departureTime}</p>
-          <p>도착시간: {flightDetails?.arrivalTime}</p>
-          <p>승객수: {flightDetails?.passengerCount}</p>
-          <p>출발일: {flightDetails?.date}</p>
-          <p>좌석 등급: {flightDetails?.seatClass}</p>
-          <p>총 금액: {calculateTotalAmount()}원</p>
+          <p>항공편명: {flightDataState?.flightData[0]?.flightNumber}</p>
+          <p>출발공항: {flightDataState?.flightData[0]?.arrivalAirport}</p>
+          <p>출발시간: {departureTimes[0]}</p>
+          <p>도착공항: {flightDataState?.flightData[0]?.departureAirport}</p>
+          <p>도착시간: {arrivalTimes[0]}</p>
+          <p>좌석 등급: {flightDataState?.flightData[0]?.seatClass}</p>
+          <p>승객수: {flightDataState?.passengerCount}</p>
+          <p>총 금액: {flightDataState?.paymentAmount}원</p>
         </div>
         <div>
           <h3>선택된 좌석</h3>
@@ -118,11 +162,18 @@ function PaymentConfirmation() {
             약관에 동의합니다.
           </label>
         </div>
-        <div>
-          <button onClick={handleTicketPurchase} disabled={!isCheckboxChecked}>
+        <StyledLink
+          to={{
+            pathname: '/Ticket',
+          }}
+        >
+          <PaymentButton
+            onClick={handleTicketPurchase}
+            disabled={!isCheckboxChecked}
+          >
             티켓 발매
-          </button>
-        </div>
+          </PaymentButton>
+        </StyledLink>
       </div>
     </Container>
   );

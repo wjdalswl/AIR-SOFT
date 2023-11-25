@@ -35,11 +35,10 @@ export interface SeatData {
 }
 
 export interface TicketProps {
-  SeatData: {
-    flightData: FlightData[];
-    passengerCount: number;
-    paymentAmount: number;
-  };
+  flightData: FlightData[];
+  paymentType: string;
+  passengerCount: number;
+  paymentAmount: number;
   selectedSeats?: string[] | string;
 }
 

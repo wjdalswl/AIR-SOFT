@@ -3,19 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import QRGenerator from './QRGenerator';
-
-interface LocationState {
-  flightDetails?: {
-    airline: string;
-    departureTime: string;
-    arrivalTime: string;
-    passengerCount: number;
-    date: string;
-    seatClass: string;
-  };
-  selectedSeats?: string[] | string;
-  totalAmount?: number;
-}
+import { TicketProps } from '../../api';
 
 const Container = styled.div`
   width: 100%;
@@ -56,27 +44,30 @@ const TicketSeat = styled.div`
 `;
 
 function Ticket() {
-  const location = useLocation<LocationState>();
-  const { flightDetails, selectedSeats, totalAmount } = location.state || {};
+  const location = useLocation<TicketProps>();
+  const {
+    flightData,
+    paymentType,
+    passengerCount,
+    paymentAmount,
+    selectedSeats,
+  } = location.state || {};
 
-  const tickets = Array.from(
-    { length: flightDetails?.passengerCount || 0 },
-    (_, index) => ({
-      flightDetails: {
-        airline: flightDetails?.airline,
-        departureTime: flightDetails?.departureTime,
-        arrivalTime: flightDetails?.arrivalTime,
-        passengerCount: 1,
-        date: flightDetails?.date,
-        seatClass: flightDetails?.seatClass,
-      },
-      totalAmount,
-      selectedSeat:
-        typeof selectedSeats === 'string'
-          ? selectedSeats.split(',')[index]
-          : 'Not available',
-    })
-  );
+  const tickets = Array.from({ length: passengerCount || 0 }, (_, index) => ({
+    flightDetails: {
+      airline: flightData[0]?.flightNumber,
+      departureTime: flightData[0]?.departureTime,
+      arrivalTime: flightData[0]?.arrivalTime,
+      passengerCount: passengerCount,
+      date: flightData[0]?.id,
+      seatClass: flightData[0]?.seatClass,
+    },
+    paymentAmount: paymentAmount,
+    selectedSeat:
+      typeof selectedSeats === 'string'
+        ? selectedSeats.split(',')[index]
+        : 'Not available',
+  }));
 
   console.log(tickets);
 
@@ -86,7 +77,7 @@ function Ticket() {
         <TicketContainer key={index}>
           <TicketHeader>
             <TicketTitle>{`항공편 티켓 ${index + 1}`}</TicketTitle>
-            <TicketAmount>총 금액: {ticket.totalAmount}원</TicketAmount>
+            <TicketAmount>총 금액: {ticket.paymentAmount}원</TicketAmount>
           </TicketHeader>
           <TicketDetails>
             <p>항공사: {ticket.flightDetails?.airline}</p>
