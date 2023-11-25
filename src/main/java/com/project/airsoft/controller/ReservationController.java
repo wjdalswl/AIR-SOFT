@@ -1,20 +1,12 @@
 package com.project.airsoft.controller;
 
 import com.project.airsoft.domain.Reservation;
-import com.project.airsoft.domain.User;
-import com.project.airsoft.dto.MyPageDTO;
 import com.project.airsoft.dto.ReservationRequestDTO;
-import com.project.airsoft.dto.ReservationSearchResponseDTO;
-import com.project.airsoft.repository.FlightScheduleRepository;
-import com.project.airsoft.repository.ReservationRepository;
 import com.project.airsoft.repository.UserRepository;
 import com.project.airsoft.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,14 +32,6 @@ public class ReservationController {
     @GetMapping("/search")
     public Reservation searchReservation(@RequestParam String code) {
         return reservationService.searchReservation(code);
-    }
-
-    @GetMapping("/cancel")
-    public ResponseEntity<String> cancelFlight(Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).get();
-        return null;
-
     }
 
     @GetMapping("/cancel/{reservation_id}")
