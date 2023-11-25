@@ -12,4 +12,9 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> handleSeatAlreadyReservedException(SeatAlreadyReservedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(NoAuthenticationException.class)
+    public ResponseEntity<String> handleNoAuthenticationException(NoAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 }

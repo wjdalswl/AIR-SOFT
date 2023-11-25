@@ -1,5 +1,7 @@
 package com.project.airsoft.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,5 +39,6 @@ public class Seats {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id")
+    @JsonBackReference
     private FlightSchedule flightSchedule;
 }

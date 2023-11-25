@@ -1,22 +1,21 @@
 package com.project.airsoft.controller;
 
+import com.project.airsoft.domain.Reservation;
 import com.project.airsoft.domain.User;
 import com.project.airsoft.dto.MyPageDTO;
-import com.project.airsoft.dto.ReservationRequestDTO;
+import com.project.airsoft.dto.ReservationSearchResponseDTO;
+import com.project.airsoft.exception.NoAuthenticationException;
+import com.project.airsoft.repository.ReservationRepository;
+import com.project.airsoft.repository.SeatsRepository;
 import com.project.airsoft.repository.UserRepository;
 import com.project.airsoft.security.JwtProvider;
-import com.sun.security.auth.UserPrincipal;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,15 +24,34 @@ public class MyPageController {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtTokenProvider;
+    private final ReservationRepository reservationRepository;
+    private final SeatsRepository seatsRepository;
 
     @GetMapping("/my-page")
     @PreAuthorize("hasRole('USER')")
-    public MyPageDTO getMyPage(Authentication authentication) {
+    public MyPageDTO getMyPage(Authentication authentication) throws NoAuthenticationException {
 
+        if (authentication == null) {
+            throw new NoAuthenticationException("인증되지 않은 사용자입니다.");
+        }
 
         // 현재 인증된 사용자의 이름을 가져옵니다.
         String username = authentication.getName();
         User user = userRepository.findByUsername(username).get();
+
+        List<Reservation> reservationList = reservationRepository.findAllByUser(user);
+        List<ReservationSearchResponseDTO> reservationSearchResponseDTOS = new ArrayList<>();
+        for (Reservation reservation : reservationList) {
+            reservationSearchResponseDTOS.add(ReservationSearchResponseDTO.builder().
+                    id(reservation.getId()).
+                    departureDate(reservation.getDepartureDate()).
+                    arrivalDate(reservation.getArrivalDate()).
+                    passengers(reservation.getPassengers()).
+                    seatClass(reservation.getSeatClass()).
+                    seatRow(seatsRepository.findById(reservation.getSeatId()).get().getSeatRow()).
+                    seatLetter(seatsRepository.findById(reservation.getSeatId()).get().getSeatLetter())
+                    .build());
+        }
 
         // 요청한 페이지가 현재 사용자의 페이지인지 확인합니다.
         if (isCurrentUserPage(username)) {
@@ -46,6 +64,7 @@ public class MyPageController {
                     .engName(user.getEngName())
                     .birth(user.getBirth())
                     .phone(user.getPhone())
+                    .reservations(reservationSearchResponseDTOS)
                     .build();
         } else {
             // 현재 사용자가 다른 사용자의 페이지에 액세스하려고 할 때 권한 없음을 반환합니다.
