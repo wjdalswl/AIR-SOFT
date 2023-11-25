@@ -59,7 +59,11 @@ public class FlightSchedule {
     private Price price;
 
     public Long getSeatsTotal() {
-        // seatsList가 null이 아니라면 크기를 반환하고, null이면 0을 반환하도록 처리
-        return seatsList != null ? (long) seatsList.size() : 0L;
+        // available이 true인 좌석만 포함되도록 seatsList를 필터링
+        long availableSeats = seatsList != null
+                ? seatsList.stream().filter(Seats::isAvailable).count()
+                : 0L;
+
+        return availableSeats;
     }
 }
