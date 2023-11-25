@@ -61,11 +61,14 @@ function Ticket() {
       passengerCount: passengerCount,
       date: flightData[0]?.id,
       seatClass: flightData[0]?.seatClass,
+      departureDate: flightData[0]?.departureDate,
     },
     paymentAmount: paymentAmount,
     selectedSeat:
       typeof selectedSeats === 'string'
         ? selectedSeats.split(',')[index]
+        : Array.isArray(selectedSeats)
+        ? selectedSeats[index]
         : 'Not available',
   }));
 
@@ -84,7 +87,7 @@ function Ticket() {
             <p>출발시간: {ticket.flightDetails?.departureTime}</p>
             <p>도착시간: {ticket.flightDetails?.arrivalTime}</p>
             <p>승객수: {ticket.flightDetails?.passengerCount}</p>
-            <p>출발일: {ticket.flightDetails?.date}</p>
+            <p>출발일: {ticket.flightDetails?.departureDate}</p>
             <p>좌석 등급: {ticket.flightDetails?.seatClass}</p>
           </TicketDetails>
           <TicketSeat>{`선택된 좌석: ${ticket.selectedSeat}`}</TicketSeat>

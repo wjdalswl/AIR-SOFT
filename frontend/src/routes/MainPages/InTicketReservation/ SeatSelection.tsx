@@ -181,7 +181,6 @@ function SeatSelection() {
                     isOccupied={isOccupied[rowIndex * columns + columnIndex]}
                     isSelected={isSeatSelected(rowIndex + 1, columnIndex + 1)}
                     disabled={
-                      // Disable seats based on seat class and column index
                       (seatClass === 'economy' && rowIndex == 0) ||
                       (seatClass === 'business' && rowIndex != 0)
                     }
