@@ -1,19 +1,22 @@
 package com.project.airsoft.dto;
 
+import java.time.LocalDate;
 import lombok.Data;
 
 @Data
 public class SignRequest {
 
-    private Long id;
-
     private String username;
 
     private String password;
 
-    private String nickname;
+    private String korName;
 
-    private String name;
+    private String engName;
+
+    private LocalDate birth;
+
+    private String phone;
 
     private String email;
 }

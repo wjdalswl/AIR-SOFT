@@ -54,9 +54,7 @@ public class MyPageController {
         }
     }
 
-    // 실제로는 데이터베이스 또는 다른 저장소에서 현재 사용자와 페이지 소유자를 비교하는 로직이 필요합니다.
     private boolean isCurrentUserPage(String username) {
-        // 이 예제에서는 단순히 사용자 이름이 일치하면 같은 사용자로 간주합니다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication.getName().equals(username);
     }

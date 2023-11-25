@@ -30,13 +30,13 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
 
-
     @Transactional
     public void makeReservation(ReservationRequestDTO reservationRequestDTO) {
         // 예약을 위한 사용자 및 항공 스케줄, 좌석 정보 가져오기
         Optional<User> user = userRepository.findById(reservationRequestDTO.getUserId());
 
-        Optional<FlightSchedule> flightSchedule = flightScheduleRepository.findById(reservationRequestDTO.getFlightId());
+        Optional<FlightSchedule> flightSchedule = flightScheduleRepository.findById(
+                reservationRequestDTO.getFlightId());
 
         String seatClass = reservationRequestDTO.getSeatClass();
 
@@ -60,8 +60,7 @@ public class ReservationService {
 //
 //        String seatLetter = reservationRequestDTO.getSeatLetter();
 
-
-        for(int i = 0; i<seatRowList.size(); i++) {
+        for (int i = 0; i < seatRowList.size(); i++) {
             System.out.println(seatRowList.get(i));
             System.out.println(seatLetterList.get(i));
             Seats seat = seatsRepository.findByFlightScheduleAndSeatClassAndSeatRowAndSeatLetter(flightSchedule,
@@ -69,7 +68,8 @@ public class ReservationService {
                     seatRowList.get(i), seatLetterList.get(i));
             // 좌석이 이미 예약되었는지 확인
             if (!seat.isAvailable()) {
-                throw new SeatAlreadyReservedException("좌석 " + seatRowList.get(i) + "-" + seatLetterList.get(i) + "은(는) 이미 예약되었습니다.");
+                throw new SeatAlreadyReservedException(
+                        "좌석 " + seatRowList.get(i) + "-" + seatLetterList.get(i) + "은(는) 이미 예약되었습니다.");
             }
 
             // 예약 생성 및 저장
@@ -104,4 +104,63 @@ public class ReservationService {
     public Reservation searchReservation(User user) {
         return reservationRepository.findByUser(user);
     }
+
+    @Transactional
+    public void cancelReservation(String reservationCode) {
+        Optional<Reservation> optionalReservation = Optional.ofNullable(
+                reservationRepository.findById(reservationCode));
+
+        if (optionalReservation.isPresent()) {
+            Reservation reservation = optionalReservation.get();
+
+            // 예약된 좌석 상태를 다시 available로 변경
+            Seats seat = seatsRepository.findById(reservation.getSeatId()).get();
+            seat.setAvailable(true);
+            seat.setUser_id(null);  // 예약한 사용자 정보 삭제
+            seatsRepository.save(seat);
+
+            // 예약 삭제
+            reservationRepository.delete(reservation);
+
+            // 예약된 좌석 수 업데이트
+            FlightSchedule flightSchedule = reservation.getFlightSchedule();
+            flightSchedule.setSeatsTotal(flightSchedule.getSeatsTotal() + reservation.getPassengers());
+            flightScheduleRepository.save(flightSchedule);
+        } else {
+            // 예약 코드에 해당하는 예약이 없을 경우 예외 처리 또는 로깅
+            log.error("Reservation with code {} not found.", reservationCode);
+            // 예외를 던지거나, 로깅 등의 적절한 처리를 수행할 수 있습니다.
+        }
+    }
+
+//    @Transactional
+//    public void cancelReservation(User user) {
+//
+//
+//
+//        Optional<Reservation> optionalReservation = Optional.ofNullable(
+//                reservationRepository.findById(reservationCode));
+//
+//        if (optionalReservation.isPresent()) {
+//            Reservation reservation = optionalReservation.get();
+//
+//            // 예약된 좌석 상태를 다시 available로 변경
+//            Seats seat = seatsRepository.findById(reservation.getSeatId()).get();
+//            seat.setAvailable(true);
+//            seat.setUser_id(null);  // 예약한 사용자 정보 삭제
+//            seatsRepository.save(seat);
+//
+//            // 예약 삭제
+//            reservationRepository.delete(reservation);
+//
+//            // 예약된 좌석 수 업데이트
+//            FlightSchedule flightSchedule = reservation.getFlightSchedule();
+//            flightSchedule.setSeatsTotal(flightSchedule.getSeatsTotal() + reservation.getPassengers());
+//            flightScheduleRepository.save(flightSchedule);
+//        } else {
+//            // 예약 코드에 해당하는 예약이 없을 경우 예외 처리 또는 로깅
+//            log.error("Reservation with code {} not found.", reservationCode);
+//            // 예외를 던지거나, 로깅 등의 적절한 처리를 수행할 수 있습니다.
+//        }
+//    }
 }

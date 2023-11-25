@@ -12,9 +12,11 @@ import com.project.airsoft.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final UserRepository userRepository;
 
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveFlight(@RequestBody ReservationRequestDTO requestDTO) {
         reservationService.makeReservation(requestDTO);
-        return new ResponseEntity<>("Reservation successful", HttpStatus.OK);
+        return new ResponseEntity<>("예약이 완료되었습니다.", HttpStatus.OK);
     }
 
     @GetMapping("/search")
@@ -39,17 +42,17 @@ public class ReservationController {
         return reservationService.searchReservation(code);
     }
 
-//    @GetMapping("/my-page")
-//    public ResponseEntity<MyPageDTO> getMyPage(@AuthenticationPrincipal UserDetails userDetails) {
-//        // 현재 인증된 사용자의 정보 가져오기
-//        String username = userDetails.getUsername();
-//
-//        // 사용자 정보로 마이페이지 데이터 가져오기
-//        User user = userRepository.findByUsername(username).get();
-//
-//        // 마이페이지 데이터를 MyPageDTO로 변환하여 반환
-//        MyPageDTO myPageDTO = new MyPageDTO(user.getUsername(), user.getKorName(), user.getEngName(), user.getBirth(),
-//                user.getPhone(), user.getEmail());
-//        return ResponseEntity.ok(myPageDTO);
-//    }
+    @GetMapping("/cancel")
+    public ResponseEntity<String> cancelFlight(Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username).get();
+        return null;
+
+    }
+
+    @GetMapping("/cancel/{reservation_id}")
+    public ResponseEntity<String> cancelFlight(@PathVariable String reservation_id) {
+        reservationService.cancelReservation(reservation_id);
+        return new ResponseEntity<>("취소가 완료되었습니다.", HttpStatus.OK);
+    }
 }
