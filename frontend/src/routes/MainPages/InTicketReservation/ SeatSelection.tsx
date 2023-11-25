@@ -186,7 +186,7 @@ function SeatSelection() {
                       (seatClass === 'business' && rowIndex != 0)
                     }
                   >
-                    {`${columnToLetter(columnIndex + 1)}-${rowIndex + 1}`}
+                    {`${rowIndex + 1}-${columnToLetter(columnIndex + 1)}`}
                   </SeatButton>
                 </React.Fragment>
               ))}
@@ -200,7 +200,7 @@ function SeatSelection() {
           state: {
             ...location.state,
             selectedSeats: selectedSeats.map(
-              (seat) => `${columnToLetter(seat.row)}-${seat.column}`
+              (seat) => `${seat.row}-${columnToLetter(seat.column)}`
             ),
           },
         }}
