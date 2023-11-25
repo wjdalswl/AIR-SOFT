@@ -42,14 +42,6 @@ public class ReservationController {
         return reservationService.searchReservation(code);
     }
 
-    @GetMapping("/cancel")
-    public ResponseEntity<String> cancelFlight(Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).get();
-        return null;
-
-    }
-
     @GetMapping("/cancel/{reservation_id}")
     public ResponseEntity<String> cancelFlight(@PathVariable String reservation_id) {
         reservationService.cancelReservation(reservation_id);

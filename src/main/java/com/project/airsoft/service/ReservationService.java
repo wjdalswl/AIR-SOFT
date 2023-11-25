@@ -132,35 +132,4 @@ public class ReservationService {
             // 예외를 던지거나, 로깅 등의 적절한 처리를 수행할 수 있습니다.
         }
     }
-
-//    @Transactional
-//    public void cancelReservation(User user) {
-//
-//
-//
-//        Optional<Reservation> optionalReservation = Optional.ofNullable(
-//                reservationRepository.findById(reservationCode));
-//
-//        if (optionalReservation.isPresent()) {
-//            Reservation reservation = optionalReservation.get();
-//
-//            // 예약된 좌석 상태를 다시 available로 변경
-//            Seats seat = seatsRepository.findById(reservation.getSeatId()).get();
-//            seat.setAvailable(true);
-//            seat.setUser_id(null);  // 예약한 사용자 정보 삭제
-//            seatsRepository.save(seat);
-//
-//            // 예약 삭제
-//            reservationRepository.delete(reservation);
-//
-//            // 예약된 좌석 수 업데이트
-//            FlightSchedule flightSchedule = reservation.getFlightSchedule();
-//            flightSchedule.setSeatsTotal(flightSchedule.getSeatsTotal() + reservation.getPassengers());
-//            flightScheduleRepository.save(flightSchedule);
-//        } else {
-//            // 예약 코드에 해당하는 예약이 없을 경우 예외 처리 또는 로깅
-//            log.error("Reservation with code {} not found.", reservationCode);
-//            // 예외를 던지거나, 로깅 등의 적절한 처리를 수행할 수 있습니다.
-//        }
-//    }
 }

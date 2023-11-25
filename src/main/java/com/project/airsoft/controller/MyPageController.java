@@ -3,6 +3,7 @@ package com.project.airsoft.controller;
 import com.project.airsoft.domain.User;
 import com.project.airsoft.dto.MyPageDTO;
 import com.project.airsoft.dto.ReservationRequestDTO;
+import com.project.airsoft.exception.NoAuthenticationException;
 import com.project.airsoft.repository.UserRepository;
 import com.project.airsoft.security.JwtProvider;
 import com.sun.security.auth.UserPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +30,11 @@ public class MyPageController {
 
     @GetMapping("/my-page")
     @PreAuthorize("hasRole('USER')")
-    public MyPageDTO getMyPage(Authentication authentication) {
+    public MyPageDTO getMyPage(Authentication authentication) throws NoAuthenticationException {
+
+        if (authentication == null) {
+            throw new NoAuthenticationException("인증되지 않은 사용자입니다.");
+        }
 
 
         // 현재 인증된 사용자의 이름을 가져옵니다.
