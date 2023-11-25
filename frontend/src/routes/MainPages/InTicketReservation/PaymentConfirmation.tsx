@@ -82,15 +82,6 @@ function PaymentConfirmation() {
       `티켓 발매가 완료되었습니다. 총 금액: ${flightDataState?.paymentAmount}원`
     );
 
-    const formattedSelectedSeats =
-      location.state.selectedSeats &&
-      (typeof location.state.selectedSeats === 'string'
-        ? [location.state.selectedSeats]
-        : location.state.selectedSeats.map((seat) => {
-            const [column, row] = seat.split('-');
-            return `${row}-${column}`;
-          }));
-
     const ticketData = {
       userId: 1,
 
@@ -100,7 +91,7 @@ function PaymentConfirmation() {
 
       passengers: location.state.passengerCount,
 
-      selectedSeats: formattedSelectedSeats,
+      selectedSeats: location.state.selectedSeats,
     };
     console.log(ticketData);
     // 서버로 POST 요청
@@ -111,7 +102,7 @@ function PaymentConfirmation() {
       },
       body: JSON.stringify(ticketData),
     })
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((data) => {
         console.log('Server response:', data);
 
