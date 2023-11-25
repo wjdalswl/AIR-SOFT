@@ -40,12 +40,16 @@ public class SignService {
 
     }
 
-    public boolean register(SignRequest request) throws Exception {
+    public String register(SignRequest request) throws Exception {
         try {
             User user = User.builder()
                     .username(request.getUsername())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .email(request.getEmail())
+                    .birth(request.getBirth())
+                    .engName(request.getEngName())
+                    .korName(request.getKorName())
+                    .phone(request.getPhone())
                     .build();
 
             user.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
@@ -55,7 +59,7 @@ public class SignService {
             System.out.println(e.getMessage());
             throw new Exception("잘못된 요청입니다.");
         }
-        return true;
+        return "true";
     }
 
     public SignResponse getUser(String account) throws Exception {
