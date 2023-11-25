@@ -8,6 +8,8 @@ import PaymentConfirmation from './routes/MainPages/InTicketReservation/PaymentC
 import Ticket from './routes/MainPages/InTicketReservation/Ticket';
 import FlightSearch from './routes/MainPages/InFlightStatus/FlightSearch';
 import RegisterForm from './routes/LoginPages/RegisterForm';
+import MyPage from './routes/LoginPages/MyPage';
+import ProtectedRoute from './ProtectedRoute';
 
 function Router() {
   return (
@@ -17,20 +19,21 @@ function Router() {
         <Route path="/Login">
           <Login />
         </Route>
+        <ProtectedRoute path="/MyPage" component={MyPage} />
         <Route path="/RegisterForm">
           <RegisterForm />
         </Route>
         <Route path="/FlightSelect">
           <FlightSelect />
         </Route>
-        <Route path="/SeatSelection">
-          <SeatSelection />
-        </Route>
-        <Route path="/PaymentConfirmation">
-          <PaymentConfirmation />
-        </Route>
-        <Route path="/Ticket">
-          <Ticket />
+        <ProtectedRoute path="/SeatSelection" component={SeatSelection} />
+        <ProtectedRoute
+          path="/PaymentConfirmation"
+          component={PaymentConfirmation}
+        />
+        <ProtectedRoute path="/Ticket" component={Ticket} />
+        <Route path="/FlightSearch">
+          <FlightSearch />
         </Route>
         <Route path="/FlightSearch">
           <FlightSearch />
