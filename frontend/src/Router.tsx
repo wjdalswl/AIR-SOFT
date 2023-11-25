@@ -7,6 +7,7 @@ import SeatSelection from './routes/MainPages/InTicketReservation/ SeatSelection
 import PaymentConfirmation from './routes/MainPages/InTicketReservation/PaymentConfirmation';
 import Ticket from './routes/MainPages/InTicketReservation/Ticket';
 import FlightSearch from './routes/MainPages/InFlightStatus/FlightSearch';
+import RegisterForm from './routes/LoginPages/RegisterForm';
 
 function Router() {
   return (
@@ -15,6 +16,9 @@ function Router() {
       <Switch>
         <Route path="/Login">
           <Login />
+        </Route>
+        <Route path="/RegisterForm">
+          <RegisterForm />
         </Route>
         <Route path="/FlightSelect">
           <FlightSelect />
