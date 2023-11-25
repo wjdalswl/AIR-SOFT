@@ -42,8 +42,8 @@ public class FlightSearchController {
                     .departureAirport(flightSchedule.getDepartureAirport())
                     .arrivalTime(flightSchedule.getArrivalTime())
                     .arrivalAirport(flightSchedule.getArrivalAirport())
-                    .seatsTotal(flightSchedule.getSeatsTotal())
-                    .seatClass(seatClass)  // 예시로 Economy로 고정, 실제로는 seatClass 값이 어떻게 지정되는지에 따라 수정
+                    .seatsTotal(flightSchedule.getSeatsTotal(seatClass))
+                    .seatClass(seatClass)
                     .build();
 
             responseDTOList.add(responseDTO);

@@ -58,12 +58,18 @@ public class FlightSchedule {
     @JoinColumn(name = "price_id")
     private Price price;
 
-    public Long getSeatsTotal() {
-        // available이 true인 좌석만 포함되도록 seatsList를 필터링
-        long availableSeats = seatsList != null
-                ? seatsList.stream().filter(Seats::isAvailable).count()
-                : 0L;
+    public Long getSeatsTotal(String seatClass) {
 
-        return availableSeats;
+        if(seatClass.equals("economy")) {
+            return seatsList.stream()
+                    .filter(seat -> seat.getSeatClass().equals("economy") && seat.isAvailable())
+                    .count();
+        } else if (seatClass.equals("business")) {
+            return seatsList.stream()
+                    .filter(seat -> seat.getSeatClass().equals("business") && seat.isAvailable())
+                    .count();
+        } else {
+            return 0L;
+        }
     }
 }
