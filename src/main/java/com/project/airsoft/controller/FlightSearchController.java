@@ -27,16 +27,17 @@ public class FlightSearchController {
         List<FlightSchedule> flights = flightSearchService.searchFlights(departureAirport, arrivalAirport, date, seatClass);
 
         // 조회 결과를 FlightSearchResponseDTO로 변환하여 응답합니다.
-        return convertToResponseDTO(flights, seatClass);
+        return convertToResponseDTO(flights, seatClass, date);
     }
 
-    private List<FlightSearchResponseDTO> convertToResponseDTO(List<FlightSchedule> flights, String seatClass) {
+    private List<FlightSearchResponseDTO> convertToResponseDTO(List<FlightSchedule> flights, String seatClass, String date) {
         List<FlightSearchResponseDTO> responseDTOList = new ArrayList<>();
 
         for (FlightSchedule flightSchedule : flights) {
             FlightSearchResponseDTO responseDTO = FlightSearchResponseDTO.builder()
                     .id(flightSchedule.getId())
                     .flightNumber(flightSchedule.getFlightNumber())
+                    .departureDate(date)
                     .departureTime(flightSchedule.getDepartureTime())
                     .departureAirport(flightSchedule.getDepartureAirport())
                     .arrivalTime(flightSchedule.getArrivalTime())

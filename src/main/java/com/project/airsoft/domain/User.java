@@ -1,5 +1,7 @@
 package com.project.airsoft.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +30,7 @@ import lombok.ToString.Exclude;
 @AllArgsConstructor
 @Builder
 @ToString
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,11 +53,20 @@ public class User {
 
 
     @OneToMany(mappedBy = "user")
-    @Exclude
+    @JsonIgnore
     private List<Reservation> reservation;
 
     public void setReservation(List<Reservation> reservation) {
-        this.reservation = reservation;
+        if (this.reservation == null) {
+            this.reservation = reservation;
+        } else {
+            this.reservation.clear();
+            this.reservation.addAll(reservation);
+        }
+        // 양방향 참조 설정
+        if (reservation != null) {
+            reservation.forEach(res -> res.setUser(this));
+        }
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
