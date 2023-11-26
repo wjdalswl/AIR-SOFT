@@ -7,29 +7,26 @@ import {
   DataInputDiv,
   SearchButton,
   StyledLink,
-} from './InTicketReservation/ TicketReservation';
+} from '../InTicketReservation/ TicketReservation';
+import { useHistory } from 'react-router-dom';
 
 function ReservationInquiry() {
+  const history = useHistory();
   const today = new Date();
   const todayISOString = today.toISOString().split('T')[0];
 
-  const [reservationNumber, setReservationNumber] = useState('');
+  const [code, setCode] = useState('');
   const [date, setDate] = useState<string | undefined>(todayISOString);
   const [passengerLastName, setPassengerLastName] = useState('');
   const [passengerFirstName, setPassengerFirstName] = useState('');
-  const [flightStatus, setFlightStatus] = useState(null);
+  const [flightData, setFlightData] = useState<any>(null);
 
   const handleDateChange = (value: string) => {
     setDate(value || todayISOString);
   };
 
   const handleSearch = () => {
-    // 조회 기능 구현
-    const queryParams = new URLSearchParams({});
-
-    const apiUrl = `/api/FlightSelect?${queryParams.toString()}`;
-
-    fetch(apiUrl)
+    fetch(`/api/reservations/search?${code}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -37,7 +34,14 @@ function ReservationInquiry() {
         return response.json();
       })
       .then((data) => {
-        console.log('Flight Data1111:', data);
+        // 서버로부터 받은 데이터를 state에 설정
+        setFlightData(data);
+
+        // 데이터를 받은 후에 다음 페이지로 이동
+        history.push({
+          pathname: '/ShowReservation',
+          state: { flightData: data },
+        });
       })
       .catch((error) => {
         // 에러 처리
@@ -57,8 +61,8 @@ function ReservationInquiry() {
             <input
               type="text"
               placeholder="KE1009"
-              value={reservationNumber}
-              onChange={(e) => setReservationNumber(e.target.value)}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
             />
           </DataInputDiv>
         </InputDiv>
@@ -102,7 +106,7 @@ function ReservationInquiry() {
       </SubContainer>
       <StyledLink
         to={{
-          pathname: '/FlightSelect/Reservation',
+          pathname: '/ShowReservation',
         }}
       >
         <SearchButton onClick={handleSearch}>조회</SearchButton>

@@ -4,25 +4,44 @@ import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { FlightData, SeatData } from '../../api';
 import {
-  Locationheading,
-  LocationDiv,
-} from '../InTicketReservation/ TicketReservation';
-import {
   Container,
   SubContainer1,
   SubContainer,
   SubContainer2,
   FlightList,
-  Flight,
   FlightNumber,
   TimeSpan,
   ArrowDiv,
   Title,
 } from '../InTicketReservation/FlightSelect';
 import {
-  StyledLink,
-  SearchButton,
+  Locationheading,
+  LocationDiv,
 } from '../InTicketReservation/ TicketReservation';
+
+const Flight = styled.li`
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+`;
+
+export const HomeLink = styled(Link)`
+  text-decoration: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const HomeButton = styled.button`
+  margin-top: 20px;
+  padding: 10px;
+  background-color: ${(props) => (props.disabled ? '#ccc' : '#90B1C6')};
+  color: white;
+  border: none;
+  border-radius: 10px;
+`;
 
 function FlightSelect() {
   const history = useHistory();
@@ -58,6 +77,11 @@ function FlightSelect() {
 
       setArrivalTimes(arrivalTimes);
       setDepartureTimes(departureTimes);
+      return;
+    }
+
+    if (location.state) {
+      alert('일치하는 데이터가 없습니다.');
     }
   }, [location.state, searchResults]);
 
@@ -75,6 +99,7 @@ function FlightSelect() {
           <FlightList>
             {flightData.map((flight, index) => (
               <Flight key={index}>
+                {' '}
                 <SubContainer1>
                   <FlightNumber>{flight.flightNumber}</FlightNumber>
                   <span>{flight.departureDate}</span>
@@ -100,26 +125,26 @@ function FlightSelect() {
               </Flight>
             ))}
           </FlightList>
-          <StyledLink
+          <HomeLink
             to={{
               pathname: '/',
             }}
           >
-            <SearchButton onClick={handleHome}>홈으로 돌아가기</SearchButton>
-          </StyledLink>
+            <HomeButton onClick={handleHome}>HOME</HomeButton>
+          </HomeLink>
         </>
       ) : (
         <>
           <SubContainer>
             <span>일치하는 데이터가 없습니다.</span>
           </SubContainer>
-          <StyledLink
+          <HomeLink
             to={{
               pathname: '/',
             }}
           >
-            <SearchButton onClick={handleHome}>Home</SearchButton>
-          </StyledLink>
+            <HomeButton>Home</HomeButton>
+          </HomeLink>
         </>
       )}
     </Container>

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useState } from 'react';
 import {
   StyledLink,
@@ -7,10 +7,7 @@ import {
 } from '../MainPages/InTicketReservation/ TicketReservation';
 import { saveToken } from '../TokenManagement/token';
 import setAuthorizationToken from '../TokenManagement/setAuthorizationToken';
-import {
-  Container,
-  Title,
-} from '../MainPages/InTicketReservation/FlightSelect';
+import { Container } from '../MainPages/InTicketReservation/FlightSelect';
 import { Form, FormGroup, Label, Input } from './RegisterForm';
 
 const SubmitDiv = styled.div`
@@ -21,13 +18,29 @@ const SubmitDiv = styled.div`
   justify-content: space-around;
 `;
 
+const LoginDiv = styled.div`
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: 25px;
+`;
+
+export const ManagerPageLink = styled(Link)`
+  text-decoration: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+`;
+
 function Login() {
   const loginhistory = useHistory();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!username || !password) {
       alert('모든 필드를 입력해주세요.');
       return;
@@ -36,8 +49,6 @@ function Login() {
     console.log('Username:', username);
     console.log('Password:', password);
 
-    // 실제로는 서버와 통신하여 사용자를 인증하고, 인증이 성공하면 onLogin 콜백을 호출합니다.
-    // onLogin(username, password);
     fetch('/login', {
       method: 'POST',
       headers: {
@@ -56,11 +67,11 @@ function Login() {
         saveToken(receivedToken);
         setAuthorizationToken(receivedToken);
 
-        // 로그인 정보 비교 완료되면 메인(홈) 페이지로 이동
         loginhistory.push('/TicketReservation');
       })
       .catch((error) => {
         console.error('Error sending data to server:', error);
+        alert('아이디, 비밀번호가 일치하지 않습니다.');
       });
   };
 
@@ -97,17 +108,21 @@ function Login() {
           />
         </FormGroup>
         <SubmitDiv>
-          <StyledLink to={'/TicketReservation'}>
+          <LoginDiv>
             <SearchButton onClick={handleLogin}>로그인</SearchButton>
-          </StyledLink>
+          </LoginDiv>
           <StyledLink to={'/RegisterForm'}>
             <SearchButton onClick={handleRetister}>회원가입</SearchButton>
           </StyledLink>
         </SubmitDiv>
       </Form>
-      <StyledLink to={'/ManagerPage'}>
+      <ManagerPageLink
+        to={{
+          pathname: '/ManagerPage',
+        }}
+      >
         <SearchButton onClick={handleManager}>관리자 페이지</SearchButton>
-      </StyledLink>
+      </ManagerPageLink>
     </Container>
   );
 }

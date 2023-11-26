@@ -19,6 +19,9 @@ import SeatSelection from './routes/MainPages/InTicketReservation/ SeatSelection
 import PaymentConfirmation from './routes/MainPages/InTicketReservation/PaymentConfirmation';
 import Ticket from './routes/MainPages/InTicketReservation/Ticket';
 
+//예약 조회
+import ShowReservation from './routes/MainPages/InReservationInquiry.tsx/ShowReservation';
+
 //항공편 현황
 import FlightSearch from './routes/MainPages/InFlightStatus/FlightSearch';
 
@@ -51,6 +54,10 @@ function Router() {
         <ProtectedRoute path="/Ticket" component={Ticket} />
         <Route path="/FlightSelect">
           <FlightSelect />
+        </Route>
+        //예약 조회
+        <Route path="/ShowReservation">
+          <ShowReservation />
         </Route>
         //항공편 현황
         <Route path="/FlightSearch">

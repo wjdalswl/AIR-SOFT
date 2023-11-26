@@ -10,6 +10,16 @@ import {
 } from '../MainPages/InTicketReservation/FlightSelect';
 import QRCode from 'qrcode.react';
 
+interface ReservationData {
+  departureDate: string;
+  arrivalDate: string;
+  passengers: number;
+  seatClass: string;
+  seatRow: number;
+  seatLetter: string;
+  id: string;
+}
+
 function MyPage() {
   const token = getToken();
   setAuthorizationToken(token);
@@ -18,7 +28,7 @@ function MyPage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!token);
   const [myPageData, setMyPageData] = useState<any>(null);
 
-  //화면 생성시 서버에 데이터 요청, + isLoggedIn 변경 상항있을때도
+  // 화면 생성시 서버에 데이터 요청, + isLoggedIn 변경 상항있을때도
   useEffect(() => {
     if (isLoggedIn) {
       fetch('/my-page', {
@@ -39,7 +49,7 @@ function MyPage() {
     }
   }, [isLoggedIn, token]);
 
-  //예약 취소 버튼 동작
+  // 예약 취소 버튼 동작
   const handleCancelReservation = async (reservationId: string) => {
     try {
       const response = await fetch(
@@ -54,8 +64,16 @@ function MyPage() {
       );
 
       if (response.ok) {
-        console.log('Reservation cancellation successful.');
-        window.location.reload();
+        // 서버에서 응답이 성공한 경우에만 상태를 갱신
+        setMyPageData((prevData: any) => {
+          // 새로운 상태를 계산하여 반환
+          return {
+            ...prevData,
+            reservations: prevData.reservations.filter(
+              (reservation: ReservationData) => reservation.id !== reservationId
+            ),
+          };
+        });
       } else {
         console.error(
           'Failed to cancel reservation. Server response:',
@@ -71,16 +89,13 @@ function MyPage() {
   const handleLogout = () => {
     if (token) {
       removeToken();
-
       setIsLoggedIn(false);
-
       history.push('/TicketReservation');
     }
   };
 
   return (
     <div>
-      <Title>마이페이지</Title>
       {isLoggedIn ? (
         <Container>
           <div>
