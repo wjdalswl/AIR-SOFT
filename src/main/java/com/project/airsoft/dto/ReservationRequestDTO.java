@@ -14,8 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReservationRequestDTO {
 
-    private Long userId = 1L;
-
     private Long flightId;
 
     private String seatClass;

@@ -3,6 +3,7 @@ package com.project.airsoft.service;
 import com.project.airsoft.domain.Flight;
 import com.project.airsoft.domain.FlightSchedule;
 import com.project.airsoft.domain.Seats;
+import com.project.airsoft.exception.FlightCreateException;
 import com.project.airsoft.repository.FlightRepository;
 import com.project.airsoft.repository.FlightScheduleRepository;
 import com.project.airsoft.repository.SeatsRepository;
@@ -51,11 +52,13 @@ public class FlightService {
                 } else {
                     // 데이터 배열이 예상된 길이가 아닌 경우에 대한 로깅 또는 처리
                     log.warn("잘못된 데이터 형식: " + line);
+                    throw new FlightCreateException("잘못된 데이터 형식: " + line);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the exception as needed
+            throw new FlightCreateException("CSV 파일을 읽는 동안 오류가 발생했습니다.", e);
+
         }
     }
 

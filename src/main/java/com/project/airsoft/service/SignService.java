@@ -27,7 +27,7 @@ public class SignService {
                 new BadCredentialsException("잘못된 계정정보입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("잘못된 계정정보입니다.");
+            throw new BadCredentialsException("비밀번호가 틀렸습니다.");
         }
 
         return SignResponse.builder()
