@@ -8,6 +8,7 @@ import {
   FlightList,
   Title,
 } from '../MainPages/InTicketReservation/FlightSelect';
+import QRCode from 'qrcode.react';
 
 function MyPage() {
   const token = getToken();
@@ -17,8 +18,8 @@ function MyPage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!token);
   const [myPageData, setMyPageData] = useState<any>(null);
 
+  //화면 생성시 서버에 데이터 요청, + isLoggedIn 변경 상항있을때도
   useEffect(() => {
-    // isLoggedIn이 변경되었을 때만 서버에 요청
     if (isLoggedIn) {
       fetch('/my-page', {
         method: 'GET',
@@ -38,8 +39,36 @@ function MyPage() {
     }
   }, [isLoggedIn, token]);
 
+  //예약 취소 버튼 동작
+  const handleCancelReservation = async (reservationId: string) => {
+    try {
+      const response = await fetch(
+        `/api/reservations/cancel/${reservationId}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log('Reservation cancellation successful.');
+        window.location.reload();
+      } else {
+        console.error(
+          'Failed to cancel reservation. Server response:',
+          response
+        );
+      }
+    } catch (error) {
+      console.error('Error cancelling reservation:', error);
+    }
+  };
+
+  // 로그아웃 버튼 동작 -> 로컬 스토리지 토큰 제거
   const handleLogout = () => {
-    // 로그아웃 시 로컬 스토리지의 토큰을 제거합니다.
     if (token) {
       removeToken();
 
@@ -76,6 +105,14 @@ function MyPage() {
                         좌석 위치: {reservation.seatRow}행{' '}
                         {reservation.seatLetter}열
                       </p>
+                      <QRCode
+                        value={`예약 정보: ${JSON.stringify(reservation)}`}
+                      />
+                      <SearchButton
+                        onClick={() => handleCancelReservation(reservation.id)}
+                      >
+                        예약 취소
+                      </SearchButton>
                     </li>
                   )
                 )}
