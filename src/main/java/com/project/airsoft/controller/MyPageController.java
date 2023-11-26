@@ -46,6 +46,10 @@ public class MyPageController {
                     id(reservation.getId()).
                     departureDate(reservation.getDepartureDate()).
                     arrivalDate(reservation.getArrivalDate()).
+                    departureAirport(reservation.getFlightSchedule().getDepartureAirport()).
+                    arrivalAirport(reservation.getFlightSchedule().getArrivalAirport()).
+                    departureTime(reservation.getFlightSchedule().getDepartureTime()).
+                    arrivalTime(reservation.getFlightSchedule().getArrivalTime()).
                     passengers(reservation.getPassengers()).
                     seatClass(reservation.getSeatClass()).
                     seatRow(seatsRepository.findById(reservation.getSeatId()).get().getSeatRow()).
