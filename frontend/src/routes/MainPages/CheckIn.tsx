@@ -7,7 +7,7 @@ import {
   DataInputDiv,
   SearchButton,
   StyledLink,
-} from './ TicketReservation';
+} from './InTicketReservation/ TicketReservation';
 
 function CheckIn() {
   const today = new Date();

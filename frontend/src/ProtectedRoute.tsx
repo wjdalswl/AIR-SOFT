@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
-import { getToken } from './routes/token';
+import { getToken } from './routes/TokenManagement/token';
 
 interface ProtectedRouteProps extends RouteProps {
   component: React.ComponentType<any>;

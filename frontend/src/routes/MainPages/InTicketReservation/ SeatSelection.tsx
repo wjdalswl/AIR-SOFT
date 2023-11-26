@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { TicketProps } from '../../api';
-import { StyledLink } from '../ TicketReservation';
-
-const Container = styled.div`
-  margin: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding-top: 100px;
-  align-items: center;
-  background-color: #677486;
-`;
+import { Container } from './FlightSelect';
 
 const IMGContainer = styled.div`
+  margin-left: 10px;
   background-size: contain;
   background-repeat: no-repeat;
   width: 800px;
@@ -62,10 +52,15 @@ const Passage = styled.div`
   width: 20px;
 `;
 
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: white;
+`;
+
 export const PaymentButton = styled.button<{ disabled: boolean }>`
   margin-top: 20px;
   padding: 10px;
-  background-color: ${(props) => (props.disabled ? '#ccc' : 'green')};
+  background-color: ${(props) => (props.disabled ? '#ccc' : '#90B1C6')};
   color: white;
   border: none;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};

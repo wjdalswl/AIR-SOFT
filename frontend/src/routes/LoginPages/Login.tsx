@@ -1,11 +1,24 @@
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
-import { StyledLink, SearchButton } from '../MainPages/ TicketReservation';
-import { saveToken } from '../token';
+import {
+  StyledLink,
+  SearchButton,
+} from '../MainPages/InTicketReservation/ TicketReservation';
+import { saveToken } from '../TokenManagement/token';
+import setAuthorizationToken from '../TokenManagement/setAuthorizationToken';
+import {
+  Container,
+  Title,
+} from '../MainPages/InTicketReservation/FlightSelect';
+import { Form, FormGroup, Label, Input } from './RegisterForm';
 
-const Container = styled.div`
-  padding-top: 60px;
+const SubmitDiv = styled.div`
+  padding-left: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 `;
 
 function Login() {
@@ -49,8 +62,9 @@ function Login() {
 
         const receivedToken = data.token;
         saveToken(receivedToken);
+        setAuthorizationToken(receivedToken);
 
-        // 로그인 정보 비교 완료되면 로그인 페이지로 이동
+        // 로그인 정보 비교 완료되면 메인(홈) 페이지로 이동
         loginhistory.push('/');
       })
       .catch((error) => {
@@ -66,31 +80,36 @@ function Login() {
 
   return (
     <Container>
-      <div>
-        <h2>로그인</h2>
-        <div>
-          <label>아이디</label>
-          <input
+      <Form>
+        <FormGroup>
+          <Label htmlFor="username">아이디</Label>
+          <Input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        </div>
-        <div>
-          <label>비밀번호</label>
-          <input
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="password">비밀번호</Label>
+          <Input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
-        <StyledLink to={'/'}>
-          <SearchButton onClick={handleLogin}>로그인</SearchButton>
-        </StyledLink>
-        <StyledLink to={'/RegisterForm'}>
-          <SearchButton onClick={handleRetister}>회원가입</SearchButton>
-        </StyledLink>
-      </div>
+        </FormGroup>
+        <SubmitDiv>
+          <StyledLink to={'/'}>
+            <SearchButton onClick={handleLogin}>로그인</SearchButton>
+          </StyledLink>
+          <StyledLink to={'/RegisterForm'}>
+            <SearchButton onClick={handleRetister}>회원가입</SearchButton>
+          </StyledLink>
+        </SubmitDiv>
+      </Form>
+      <StyledLink to={'/ManagerPage'}>
+        <SearchButton onClick={handleRetister}>관리자 로그인</SearchButton>
+      </StyledLink>
     </Container>
   );
 }

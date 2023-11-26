@@ -1,25 +1,33 @@
-import styled from 'styled-components';
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Container } from '../MainPages/InTicketReservation/FlightSelect';
-import { SearchButton } from '../MainPages/ TicketReservation';
+import { SearchButton } from '../MainPages/InTicketReservation/ TicketReservation';
 import { useHistory } from 'react-router-dom';
-import { getToken, removeToken } from '../token';
+import { getToken, removeToken } from '../TokenManagement/token';
+import setAuthorizationToken from '../TokenManagement/setAuthorizationToken';
+import {
+  FlightList,
+  Title,
+} from '../MainPages/InTicketReservation/FlightSelect';
 
 function MyPage() {
   const token = getToken();
+  setAuthorizationToken(token);
+
   const history = useHistory();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!token);
+  const [myPageData, setMyPageData] = useState<any>(null);
 
   fetch('/my-page', {
     method: 'GET',
     headers: {
+      Authorization: 'Bearer ' + token,
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
   })
     .then((response) => response.json())
     .then((data) => {
       console.log('Server response MyPagedata:', data);
+      setMyPageData(data);
     })
     .catch((error) => {
       console.error('Error sending MyPagedata to server:', error);
@@ -38,24 +46,39 @@ function MyPage() {
 
   return (
     <div>
-      <h1>마이페이지</h1>
+      <Title>마이페이지</Title>
       {isLoggedIn ? (
         <Container>
-          {/* <div>
-            <p>마일리지: {mileage}점</p>
+          <div>
+            <p>이름: {myPageData?.korName}</p>
+            <p>영문 이름: {myPageData?.engName}</p>
+            <p>생년월일: {myPageData?.birth}</p>
+            <p>이메일: {myPageData?.email}</p>
+            <p>전화번호: {myPageData?.phone}</p>
           </div>
           <div>
-            <h2>예약 확인</h2>
-            {reservations.length > 0 ? (
-              <ul>
-                {reservations.map((reservation, index) => (
-                  <li key={index}>{reservation}</li>
-                ))}
-              </ul>
+            <Title>예약 확인</Title>
+            {myPageData?.reservations && myPageData.reservations.length > 0 ? (
+              <FlightList>
+                {myPageData.reservations.map(
+                  (reservation: any, index: number) => (
+                    <li key={index}>
+                      <p>출발일: {reservation.departureDate}</p>
+                      <p>도착일: {reservation.arrivalDate}</p>
+                      <p>승객 수: {reservation.passengers}</p>
+                      <p>좌석 등급: {reservation.seatClass}</p>
+                      <p>
+                        좌석 위치: {reservation.seatRow}행{' '}
+                        {reservation.seatLetter}열
+                      </p>
+                    </li>
+                  )
+                )}
+              </FlightList>
             ) : (
               <p>예약 내역이 없습니다.</p>
             )}
-          </div> */}
+          </div>
           <SearchButton onClick={handleLogout}>로그아웃</SearchButton>
         </Container>
       ) : (
