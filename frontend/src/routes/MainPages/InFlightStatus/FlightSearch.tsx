@@ -77,6 +77,11 @@ function FlightSelect() {
 
       setArrivalTimes(arrivalTimes);
       setDepartureTimes(departureTimes);
+      return;
+    }
+
+    if (location.state) {
+      alert('일치하는 데이터가 없습니다.');
     }
   }, [location.state, searchResults]);
 
