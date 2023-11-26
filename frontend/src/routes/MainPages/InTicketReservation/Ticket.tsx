@@ -1,41 +1,20 @@
-// Ticket.tsx
-import React from 'react';
-import styled from 'styled-components';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import QRGenerator from './QRGenerator';
 import { TicketProps } from '../../api';
 import { Container } from './FlightSelect';
-
-const TicketContainer = styled.div`
-  border: 2px solid #333;
-  padding: 20px;
-  margin-top: 20px;
-  max-width: 400px;
-`;
-
-const TicketHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-`;
-
-const TicketTitle = styled.h3`
-  margin: 0;
-`;
-
-const TicketDetails = styled.div`
-  margin-bottom: 10px;
-`;
-
-const TicketAmount = styled.div`
-  font-weight: bold;
-`;
-
-const TicketSeat = styled.div`
-  font-size: 14px;
-`;
+import {
+  ReservationsUl,
+  Reservationli,
+  ReservationId,
+  Bin,
+  Boldspan,
+} from '../../LoginPages/MyPage';
 
 function Ticket() {
+  const [arrivalTimes, setArrivalTimes] = useState<string[]>([]);
+  const [departureTimes, setDepartureTimes] = useState<string[]>([]);
+
   const location = useLocation<TicketProps>();
   const {
     flightData,
@@ -45,48 +24,78 @@ function Ticket() {
     selectedSeats,
   } = location.state || {};
 
-  const tickets = Array.from({ length: passengerCount || 0 }, (_, index) => ({
-    flightDetails: {
-      airline: flightData[0]?.flightNumber,
-      departureTime: flightData[0]?.departureTime,
-      arrivalTime: flightData[0]?.arrivalTime,
-      passengerCount: passengerCount,
-      date: flightData[0]?.id,
-      seatClass: flightData[0]?.seatClass,
-      departureDate: flightData[0]?.departureDate,
-    },
-    paymentAmount: paymentAmount,
-    selectedSeat:
-      typeof selectedSeats === 'string'
-        ? selectedSeats.split(',')[index]
-        : Array.isArray(selectedSeats)
-        ? selectedSeats[index]
-        : 'Not available',
-  }));
+  const tickets = Array.from({ length: passengerCount || 0 }, (_, index) => {
+    const flightDetails = flightData[0];
 
-  console.log(tickets);
+    const arrivalDateTime = new Date(flightDetails?.arrivalTime || '');
+    const departureDateTime = new Date(flightDetails?.departureTime || '');
+
+    return {
+      flightDetails: {
+        airline: flightDetails?.flightNumber,
+        departureTime: departureDateTime.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        arrivalTime: arrivalDateTime.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        passengerCount: passengerCount,
+        date: flightDetails?.id,
+        seatClass: flightDetails?.seatClass,
+        departureDate: flightDetails?.departureDate,
+      },
+      paymentAmount: paymentAmount,
+      selectedSeat:
+        typeof selectedSeats === 'string'
+          ? selectedSeats.split(',')[index]
+          : Array.isArray(selectedSeats)
+          ? selectedSeats[index]
+          : 'Not available',
+    };
+  });
+
+  useEffect(() => {
+    const arrivalTimes = tickets.map(
+      (ticket) => ticket.flightDetails?.arrivalTime || ''
+    );
+    const departureTimes = tickets.map(
+      (ticket) => ticket.flightDetails?.departureTime || ''
+    );
+
+    setArrivalTimes(arrivalTimes);
+    setDepartureTimes(departureTimes);
+  }, [tickets]);
 
   return (
     <Container>
-      {tickets.map((ticket, index) => (
-        <TicketContainer key={index}>
-          <TicketHeader>
-            <TicketTitle>{`항공편 티켓 ${index + 1}`}</TicketTitle>
-            <TicketAmount>총 금액: {ticket.paymentAmount}원</TicketAmount>
-          </TicketHeader>
-          <TicketDetails>
-            <p>항공사: {ticket.flightDetails?.airline}</p>
-            <p>출발시간: {ticket.flightDetails?.departureTime}</p>
-            <p>도착시간: {ticket.flightDetails?.arrivalTime}</p>
-            <p>승객수: {ticket.flightDetails?.passengerCount}</p>
-            <p>출발일: {ticket.flightDetails?.departureDate}</p>
-            <p>좌석 등급: {ticket.flightDetails?.seatClass}</p>
-          </TicketDetails>
-          <TicketSeat>{`선택된 좌석: ${ticket.selectedSeat}`}</TicketSeat>
-          {/* Include QR code using the QRGenerator component */}
-          <QRGenerator data={`티켓 ${index + 1}: ${JSON.stringify(ticket)}`} />
-        </TicketContainer>
-      ))}
+      <ReservationsUl>
+        {tickets.map((ticket, index) => (
+          <Reservationli key={index}>
+            <ReservationId>총 금액: {ticket.paymentAmount}원</ReservationId>
+            <Bin>
+              <p>항공사: {ticket.flightDetails?.airline}</p>
+              <p>출발일: {ticket.flightDetails?.departureDate}</p>
+              <Boldspan>
+                출발시간: {ticket.flightDetails?.departureTime}
+              </Boldspan>
+              <Boldspan>도착시간: {ticket.flightDetails?.arrivalTime}</Boldspan>
+            </Bin>
+
+            <Bin>
+              <Boldspan>
+                승객수: {ticket.flightDetails?.passengerCount}
+              </Boldspan>
+              <Boldspan>좌석 등급: {ticket.flightDetails?.seatClass}</Boldspan>
+              <Boldspan>{`선택된 좌석: ${ticket.selectedSeat}`}</Boldspan>
+            </Bin>
+            <QRGenerator
+              data={`티켓 ${index + 1}: ${JSON.stringify(ticket)}`}
+            />
+          </Reservationli>
+        ))}
+      </ReservationsUl>
     </Container>
   );
 }
