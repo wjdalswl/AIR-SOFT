@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { Container } from '../../MainPages/InTicketReservation/FlightSelect';
 import { FormButton } from '../RegisterForm';
+import { getToken } from '../../TokenManagement/token';
 
 export const SubContainer = styled.div`
   margin: 0;
@@ -46,6 +47,7 @@ const CSVInputDiv = styled.div`
 `;
 
 function ManagerPage() {
+  const token = getToken();
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
 
@@ -68,6 +70,7 @@ function ManagerPage() {
       try {
         const response = await axios.post('/adminupload', formData, {
           headers: {
+            Authorization: 'Bearer ' + token,
             'Content-Type': 'multipart/form-data',
           },
         });

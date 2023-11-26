@@ -10,7 +10,7 @@ import { Helmet } from 'react-helmet';
 import { useEffect } from 'react';
 
 import TicketReservation from './InTicketReservation/ TicketReservation';
-import ReservationInquiry from './ReservationInquiry';
+import ReservationInquiry from './InReservationInquiry.tsx/ReservationInquiry';
 import CheckIn from './CheckIn';
 import FlightStatus from './InFlightStatus/FlightStatus';
 

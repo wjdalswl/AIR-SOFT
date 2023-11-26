@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { FlightData, SeatData } from '../../api';
 import { Locationheading, LocationDiv } from './ TicketReservation';
 import { getToken } from '../../TokenManagement/token';
+import { HomeButton, HomeLink } from '../InFlightStatus/FlightSearch';
 
 export const Container = styled.div`
   margin: 0;
@@ -215,9 +216,18 @@ function FlightSelect() {
           </FlightList>
         </>
       ) : (
-        <SubContainer>
-          <span>일치하는 데이터가 없습니다.</span>
-        </SubContainer>
+        <>
+          <SubContainer>
+            <span>일치하는 데이터가 없습니다.</span>
+          </SubContainer>
+          <HomeLink
+            to={{
+              pathname: '/',
+            }}
+          >
+            <HomeButton>Home</HomeButton>
+          </HomeLink>
+        </>
       )}
     </Container>
   );
