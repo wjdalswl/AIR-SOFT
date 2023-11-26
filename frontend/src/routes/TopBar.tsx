@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import { getToken } from './token';
+import { getToken } from './TokenManagement/token';
 
 const StatusBarWrapper = styled.div`
   position: fixed;
@@ -21,7 +21,6 @@ const TitleColumn = styled.span`
   letter-spacing: 3px;
   span::before,
   span::after {
-    content: '|';
     color: white;
     font-family: sans-serif;
     font-weight: 100;
@@ -32,7 +31,8 @@ const TitleColumn = styled.span`
 const StatusBarColumn = styled.div`
   display: flex;
   align-items: center;
-  width: max-content;
+  justify-content: center;
+  width: 200px;
 `;
 
 const Tab = styled.span<{ isActive: boolean }>`

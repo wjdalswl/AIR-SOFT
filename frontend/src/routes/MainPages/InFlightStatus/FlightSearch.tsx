@@ -1,80 +1,129 @@
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { FlightData, fetchFlight } from '../../api';
+import { useHistory, useLocation } from 'react-router-dom';
+import { FlightData, SeatData } from '../../api';
+import {
+  Locationheading,
+  LocationDiv,
+} from '../InTicketReservation/ TicketReservation';
+import {
+  Container,
+  SubContainer1,
+  SubContainer,
+  SubContainer2,
+  FlightList,
+  Flight,
+  FlightNumber,
+  TimeSpan,
+  ArrowDiv,
+  Title,
+} from '../InTicketReservation/FlightSelect';
+import {
+  StyledLink,
+  SearchButton,
+} from '../InTicketReservation/ TicketReservation';
 
-const Container = styled.div`
-  width: 100%;
-  height: 500vh;
-  display: flex;
-  padding-top: 60px;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const FlightList = styled.ul``;
-
-const Flight = styled.li`
-  background-color: white;
-  color: ${(props) => 'black'};
-  padding: 20px;
-  border-radius: 15px;
-  margin-bottom: 10px;
-  a {
-    display: flex;
-    align-items: center;
-    padding: 20px; //링크 누룰 수 있는 범위가 커짐
-    transition: color 0.2s ease-in;
-    color: black;
-  }
-  &:hover {
-    a {
-      color: ${(props) => 'red'};
-    }
-  }
-`;
-
-function FlightSearch() {
-  const today = new Date();
-  const todayISOString = today.toISOString().split('T')[0];
+function FlightSelect() {
+  const history = useHistory();
+  const location = useLocation<SeatData>();
+  const searchResults = location.state?.flightData || [];
 
   const [flightData, setFlightData] = useState<FlightData[]>([]);
-  const location = useLocation();
-
-  // URL에서 쿼리 파라미터 추출
-  const searchParams = new URLSearchParams(location.search);
-  const departure = searchParams.get('departure') || 'GMP';
-  const destination = searchParams.get('destination') || 'PUS';
-  const date = searchParams.get('date') || todayISOString;
+  const [arrivalTimes, setArrivalTimes] = useState<string[]>([]);
+  const [departureTimes, setDepartureTimes] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchFlight();
-        if (response.data) {
-        }
-      } catch (error) {
-        console.error('API 호출 오류:', error);
-      }
-    };
+    if (searchResults && searchResults.length > 0) {
+      setFlightData(searchResults);
 
-    fetchData(); // fetchData 호출
-  }, [location.search, todayISOString, departure, destination]);
+      const times = searchResults.map((flight) => {
+        const arrivalDateTime = new Date(flight.arrivalTime);
+        const departureDateTime = new Date(flight.departureTime);
+
+        return {
+          arrivalTime: arrivalDateTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          departureTime: departureDateTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        };
+      });
+
+      const arrivalTimes = times.map((time) => time.arrivalTime);
+      const departureTimes = times.map((time) => time.departureTime);
+
+      setArrivalTimes(arrivalTimes);
+      setDepartureTimes(departureTimes);
+    }
+  }, [location.state, searchResults]);
+
+  const handleHome = () => {
+    history.push({
+      pathname: `/SeatSelection`,
+    });
+  };
 
   return (
     <Container>
-      <div>
-        {flightData.length > 0 ? (
-          <div>
-            <h3>항공편 조회 결과</h3>
-          </div>
-        ) : (
-          <p>일치하는 데이터가 없습니다.</p>
-        )}
-      </div>
+      {flightData.length > 0 ? (
+        <>
+          <Title>항공편 조회</Title>
+          <FlightList>
+            {flightData.map((flight, index) => (
+              <Flight key={index}>
+                <SubContainer1>
+                  <FlightNumber>{flight.flightNumber}</FlightNumber>
+                  <span>{flight.departureDate}</span>
+                </SubContainer1>
+                <SubContainer>
+                  <LocationDiv>
+                    <TimeSpan>{departureTimes[index]}</TimeSpan>
+                    <Locationheading>
+                      ✈️{flight.departureAirport}
+                    </Locationheading>
+                  </LocationDiv>
+                  <ArrowDiv></ArrowDiv>
+                  <LocationDiv>
+                    <TimeSpan>{arrivalTimes[index]}</TimeSpan>
+                    <Locationheading>✈️{flight.arrivalAirport}</Locationheading>
+                  </LocationDiv>
+                </SubContainer>
+                <SubContainer2>
+                  <span>💺남아있는 좌석 수: {flight.seatsTotal}</span>
+                  <span>💸이코노미석 금액: 100000원</span>
+                  <span>💵비즈니스석 금액: 150000원</span>
+                </SubContainer2>
+              </Flight>
+            ))}
+          </FlightList>
+          <StyledLink
+            to={{
+              pathname: '/',
+            }}
+          >
+            <SearchButton onClick={handleHome}>홈으로 돌아가기</SearchButton>
+          </StyledLink>
+        </>
+      ) : (
+        <>
+          <SubContainer>
+            <span>일치하는 데이터가 없습니다.</span>
+          </SubContainer>
+          <StyledLink
+            to={{
+              pathname: '/',
+            }}
+          >
+            <SearchButton onClick={handleHome}>Home</SearchButton>
+          </StyledLink>
+        </>
+      )}
     </Container>
   );
 }
 
-export default FlightSearch;
+export default FlightSelect;

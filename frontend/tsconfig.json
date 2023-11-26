@@ -99,7 +99,8 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["react", "react-dom", "react-dropzone"]
   },
   "include": ["src/**/*.tsx", "src/**/*.ts", "src/**/*.d.ts"]
 }

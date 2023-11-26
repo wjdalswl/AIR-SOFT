@@ -2,16 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { TicketProps } from '../../api';
-import { PaymentButton } from './ SeatSelection';
-import { StyledLink } from '../ TicketReservation';
+import { PaymentButton, StyledLink } from './ SeatSelection';
+import { LocationDiv, Locationheading } from './ TicketReservation';
+import {
+  Title,
+  Container,
+  SubContainer1,
+  FlightNumber,
+  SubContainer2,
+  TimeSpan,
+  ArrowDiv,
+} from './FlightSelect';
+import { SubContainer } from '../../LoginPages/Manager/ManagerPage';
 
-const Container = styled.div`
+const ToTicketDiv = styled.div`
+  width: 80%;
+`;
+
+const SubContainer3 = styled.div`
+  margin-bottom: 20px;
+  margin-bottom: 10px;
+  padding: 0;
   width: 100%;
-  height: 500vh;
   display: flex;
-  padding-top: 60px;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 `;
 
 function PaymentConfirmation() {
@@ -67,7 +83,7 @@ function PaymentConfirmation() {
     } else {
       // 데이터가 없으면 홈페이지로 이동
       alert(`데이터가 존재하지 않습니다.`);
-      history.push('/');
+      //history.push('/');
     }
   }, [location.state, history]);
 
@@ -119,31 +135,57 @@ function PaymentConfirmation() {
 
   return (
     <Container>
-      <div>
-        <h2>결제 확인 페이지</h2>
+      <Title>결제 확인 페이지</Title>
+      <SubContainer>
         <div>
           <h3>항공편 정보</h3>
-          <p>항공편명: {flightDataState?.flightData[0]?.flightNumber}</p>
-          <p>출발날짜: {flightDataState?.flightData[0]?.departureDate}</p>
-          <p>출발공항: {flightDataState?.flightData[0]?.arrivalAirport}</p>
-          <p>출발시간: {departureTimes[0]}</p>
-          <p>도착공항: {flightDataState?.flightData[0]?.departureAirport}</p>
-          <p>도착시간: {arrivalTimes[0]}</p>
+        </div>
+
+        <ToTicketDiv>
+          <SubContainer1>
+            <FlightNumber>
+              항공편명: {flightDataState?.flightData[0]?.flightNumber}
+            </FlightNumber>
+            <FlightNumber>
+              출발날짜: {flightDataState?.flightData[0]?.departureDate}
+            </FlightNumber>
+          </SubContainer1>
+
+          <SubContainer3>
+            <LocationDiv>
+              <TimeSpan>{departureTimes[0]}</TimeSpan>
+              <Locationheading>
+                ✈️{flightDataState?.flightData[0]?.arrivalAirport}
+              </Locationheading>
+            </LocationDiv>
+            <ArrowDiv></ArrowDiv>
+            <LocationDiv>
+              <TimeSpan>{arrivalTimes[0]}</TimeSpan>
+              <Locationheading>
+                ✈️{flightDataState?.flightData[0]?.departureAirport}
+              </Locationheading>
+            </LocationDiv>
+          </SubContainer3>
+
           <p>좌석 등급: {flightDataState?.flightData[0]?.seatClass}</p>
           <p>승객수: {flightDataState?.passengerCount}</p>
-          <p>총 금액: {flightDataState?.paymentAmount}원</p>
-        </div>
-        <div>
-          <h3>선택된 좌석</h3>
-          <ul>
-            {selectedSeats &&
-              (Array.isArray(selectedSeats) ? (
-                selectedSeats.map((seat, index) => <li key={index}>{seat}</li>)
-              ) : (
-                <li>{selectedSeats}</li>
-              ))}
-          </ul>
-        </div>
+          <SubContainer2>
+            <span>💸총 지불 금액: {flightDataState?.paymentAmount}원</span>
+            <div>
+              <h3>선택된 좌석</h3>
+              <ul>
+                {selectedSeats &&
+                  (Array.isArray(selectedSeats) ? (
+                    selectedSeats.map((seat, index) => (
+                      <li key={index}>{seat}</li>
+                    ))
+                  ) : (
+                    <li>{selectedSeats}</li>
+                  ))}
+              </ul>
+            </div>
+          </SubContainer2>
+        </ToTicketDiv>
         <div>
           <label>
             <input
@@ -154,19 +196,19 @@ function PaymentConfirmation() {
             약관에 동의합니다.
           </label>
         </div>
-        <StyledLink
-          to={{
-            pathname: '/Ticket',
-          }}
+      </SubContainer>
+      <StyledLink
+        to={{
+          pathname: '/Ticket',
+        }}
+      >
+        <PaymentButton
+          onClick={handleTicketPurchase}
+          disabled={!isCheckboxChecked}
         >
-          <PaymentButton
-            onClick={handleTicketPurchase}
-            disabled={!isCheckboxChecked}
-          >
-            티켓 발매
-          </PaymentButton>
-        </StyledLink>
-      </div>
+          티켓 발매
+        </PaymentButton>
+      </StyledLink>
     </Container>
   );
 }

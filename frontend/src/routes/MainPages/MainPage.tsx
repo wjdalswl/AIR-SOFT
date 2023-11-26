@@ -9,10 +9,10 @@ import {
 import { Helmet } from 'react-helmet';
 import { useEffect } from 'react';
 
-import TicketReservation from './ TicketReservation';
+import TicketReservation from './InTicketReservation/ TicketReservation';
 import ReservationInquiry from './ReservationInquiry';
 import CheckIn from './CheckIn';
-import FlightStatus from './FlightStatus';
+import FlightStatus from './InFlightStatus/FlightStatus';
 
 export const Container = styled.div`
   margin: 0;

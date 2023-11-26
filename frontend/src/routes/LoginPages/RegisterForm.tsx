@@ -1,46 +1,51 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styled from 'styled-components';
-import { SearchButton } from '../MainPages/ TicketReservation';
+import { SearchButton } from '../MainPages/InTicketReservation/ TicketReservation';
 import { useHistory } from 'react-router-dom';
+import { Container } from '../MainPages/InTicketReservation/FlightSelect';
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const Form = styled.form`
+export const Form = styled.form`
   width: 300px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.6);
 `;
 
-const FormGroup = styled.div`
+export const FormGroup = styled.div`
   margin-bottom: 20px;
 `;
 
-const Label = styled.label`
+export const Label = styled.label`
   display: block;
   margin-bottom: 5px;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
 
-const Button = styled.button`
-  background-color: #4caf50;
+export const SubmitDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const FormButton = styled.button`
+  background-color: rgba(128, 145, 171, 0.82);
   color: white;
   padding: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #677486;
+  }
 `;
 
 function RegisterForm() {
@@ -190,8 +195,9 @@ function RegisterForm() {
             onChange={handleChange}
           />
         </FormGroup>
-
-        <SearchButton type="submit">회원 가입</SearchButton>
+        <SubmitDiv>
+          <FormButton type="submit">회원 가입</FormButton>
+        </SubmitDiv>
       </Form>
     </Container>
   );

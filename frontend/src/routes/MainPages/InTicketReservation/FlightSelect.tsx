@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { FlightData, SeatData } from '../../api';
-import { Locationheading, LocationDiv } from '../ TicketReservation';
-import { getToken } from '../../token';
+import { Locationheading, LocationDiv } from './ TicketReservation';
+import { getToken } from '../../TokenManagement/token';
 
 export const Container = styled.div`
   margin: 0;
@@ -17,7 +17,7 @@ export const Container = styled.div`
   background-color: #677486;
 `;
 
-const SubContainer1 = styled.div`
+export const SubContainer1 = styled.div`
   margin-bottom: 20px;
   margin-bottom: 10px;
   padding: 0;
@@ -28,7 +28,7 @@ const SubContainer1 = styled.div`
   justify-content: space-between;
 `;
 
-const SubContainer = styled.div`
+export const SubContainer = styled.div`
   margin-bottom: 20px;
   margin-bottom: 10px;
   padding: 0;
@@ -39,7 +39,7 @@ const SubContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-const SubContainer2 = styled.div`
+export const SubContainer2 = styled.div`
   margin-top: 10px;
   margin-bottom: 10px;
   padding-top: 20px;
@@ -51,11 +51,11 @@ const SubContainer2 = styled.div`
   border-top: 1px solid #8091ab;
 `;
 
-const FlightList = styled.ul`
+export const FlightList = styled.ul`
   width: 80%;
 `;
 
-const Flight = styled.li`
+export const Flight = styled.li`
   background-color: rgba(255, 255, 255, 0.5);
   color: ${(props) => 'black'};
   border-radius: 15px;
@@ -74,17 +74,17 @@ const Flight = styled.li`
     }
   }
 `;
-const FlightNumber = styled.div`
+export const FlightNumber = styled.div`
   background-color: rgba(255, 255, 255, 0.5);
   padding: 3px 5px;
   border-radius: 20px;
 `;
-const TimeSpan = styled.span`
+export const TimeSpan = styled.span`
   font-family: sans-serif;
   font-weight: 600;
   font-size: 23px;
 `;
-const ArrowDiv = styled.div`
+export const ArrowDiv = styled.div`
   width: 60px;
   height: 60px;
   background-image: url('/images/arrowIcon.png'); /* 이미지 경로로 변경 */
@@ -93,7 +93,7 @@ const ArrowDiv = styled.div`
   background-repeat: no-repeat;
 `;
 
-const Title = styled.h1`
+export const Title = styled.h1`
   font-size: 48px;
 `;
 
