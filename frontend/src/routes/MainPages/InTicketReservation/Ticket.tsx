@@ -4,15 +4,7 @@ import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import QRGenerator from './QRGenerator';
 import { TicketProps } from '../../api';
-
-const Container = styled.div`
-  width: 100%;
-  height: 500vh;
-  display: flex;
-  padding-top: 60px;
-  flex-direction: column;
-  align-items: center;
-`;
+import { Container } from './FlightSelect';
 
 const TicketContainer = styled.div`
   border: 2px solid #333;

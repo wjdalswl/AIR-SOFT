@@ -49,8 +49,8 @@ function Router() {
           component={PaymentConfirmation}
         />
         <ProtectedRoute path="/Ticket" component={Ticket} />
-        <Route path="/FlightSearch">
-          <FlightSearch />
+        <Route path="/FlightSelect">
+          <FlightSelect />
         </Route>
         //항공편 현황
         <Route path="/FlightSearch">
