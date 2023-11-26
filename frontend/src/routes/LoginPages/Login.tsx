@@ -65,7 +65,7 @@ function Login() {
         setAuthorizationToken(receivedToken);
 
         // 로그인 정보 비교 완료되면 메인(홈) 페이지로 이동
-        loginhistory.push('/');
+        loginhistory.push('/TicketReservation');
       })
       .catch((error) => {
         console.error('Error sending data to server:', error);
@@ -99,7 +99,7 @@ function Login() {
           />
         </FormGroup>
         <SubmitDiv>
-          <StyledLink to={'/'}>
+          <StyledLink to={'/TicketReservation'}>
             <SearchButton onClick={handleLogin}>로그인</SearchButton>
           </StyledLink>
           <StyledLink to={'/RegisterForm'}>

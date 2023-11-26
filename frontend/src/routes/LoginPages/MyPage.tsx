@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container } from '../MainPages/InTicketReservation/FlightSelect';
 import { SearchButton } from '../MainPages/InTicketReservation/ TicketReservation';
 import { useHistory } from 'react-router-dom';
@@ -17,21 +17,26 @@ function MyPage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!token);
   const [myPageData, setMyPageData] = useState<any>(null);
 
-  fetch('/my-page', {
-    method: 'GET',
-    headers: {
-      Authorization: 'Bearer ' + token,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('Server response MyPagedata:', data);
-      setMyPageData(data);
-    })
-    .catch((error) => {
-      console.error('Error sending MyPagedata to server:', error);
-    });
+  useEffect(() => {
+    // isLoggedIn이 변경되었을 때만 서버에 요청
+    if (isLoggedIn) {
+      fetch('/my-page', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Server response MyPage data:', data);
+          setMyPageData(data);
+        })
+        .catch((error) => {
+          console.error('Error sending MyPage data to server:', error);
+        });
+    }
+  }, [isLoggedIn, token]);
 
   const handleLogout = () => {
     // 로그아웃 시 로컬 스토리지의 토큰을 제거합니다.
