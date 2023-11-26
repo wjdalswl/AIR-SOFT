@@ -5,6 +5,7 @@ import com.project.airsoft.domain.Reservation;
 import com.project.airsoft.domain.Seats;
 import com.project.airsoft.domain.User;
 import com.project.airsoft.dto.ReservationRequestDTO;
+import com.project.airsoft.exception.NoSuchReservationException;
 import com.project.airsoft.exception.SeatAlreadyReservedException;
 import com.project.airsoft.repository.FlightScheduleRepository;
 import com.project.airsoft.repository.ReservationRepository;
@@ -30,9 +31,9 @@ public class ReservationService {
 
 
     @Transactional
-    public void makeReservation(ReservationRequestDTO reservationRequestDTO) {
+    public void makeReservation(ReservationRequestDTO reservationRequestDTO, Long id) {
         // 예약을 위한 사용자 및 항공 스케줄, 좌석 정보 가져오기
-        Optional<User> user = userRepository.findById(reservationRequestDTO.getUserId());
+        Optional<User> user = userRepository.findById(id);
 
         Optional<FlightSchedule> flightSchedule = flightScheduleRepository.findById(
                 reservationRequestDTO.getFlightId());
@@ -54,10 +55,6 @@ public class ReservationService {
             seatRowList.add(number);
             seatLetterList.add(character);
         }
-
-//        int seatRow = reservationRequestDTO.getSeatRow();
-//
-//        String seatLetter = reservationRequestDTO.getSeatLetter();
 
         for (int i = 0; i < seatRowList.size(); i++) {
             System.out.println(seatRowList.get(i));
@@ -100,9 +97,6 @@ public class ReservationService {
         return reservationRepository.findById(code);
     }
 
-    public Reservation searchReservation(User user) {
-        return reservationRepository.findByUser(user);
-    }
 
     @Transactional
     public void cancelReservation(String reservationCode) {
@@ -126,9 +120,8 @@ public class ReservationService {
             flightSchedule.setSeatsTotal(flightSchedule.getSeatsTotal() + reservation.getPassengers());
             flightScheduleRepository.save(flightSchedule);
         } else {
-            // 예약 코드에 해당하는 예약이 없을 경우 예외 처리 또는 로깅
-            log.error("Reservation with code {} not found.", reservationCode);
-            // 예외를 던지거나, 로깅 등의 적절한 처리를 수행할 수 있습니다.
+            log.error("존재하지 않는 예약 조회 발생 {}", reservationCode);
+            throw new NoSuchReservationException(reservationCode + "에 해당하는 예약이 존재하지 않습니다.");
         }
     }
 }
