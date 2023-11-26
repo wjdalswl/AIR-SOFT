@@ -26,8 +26,12 @@ public class FlightSearchController {
 
         List<FlightSchedule> flights = flightSearchService.searchFlights(departureAirport, arrivalAirport, date, seatClass);
 
-        // 조회 결과를 FlightSearchResponseDTO로 변환하여 응답합니다.
-        return convertToResponseDTO(flights, seatClass, date);
+        if(seatClass != null) {
+            // 조회 결과를 FlightSearchResponseDTO로 변환하여 응답합니다.
+            return convertToResponseDTO(flights, seatClass, date);
+        } else {
+            return convertToResponseDTO(flights, date);
+        }
     }
 
     private List<FlightSearchResponseDTO> convertToResponseDTO(List<FlightSchedule> flights, String seatClass, String date) {
@@ -44,6 +48,26 @@ public class FlightSearchController {
                     .arrivalAirport(flightSchedule.getArrivalAirport())
                     .seatsTotal(flightSchedule.getSeatsTotal(seatClass))
                     .seatClass(seatClass)
+                    .build();
+
+            responseDTOList.add(responseDTO);
+        }
+
+        return responseDTOList;
+    }
+
+    private List<FlightSearchResponseDTO> convertToResponseDTO(List<FlightSchedule> flights, String date) {
+        List<FlightSearchResponseDTO> responseDTOList = new ArrayList<>();
+
+        for (FlightSchedule flightSchedule : flights) {
+            FlightSearchResponseDTO responseDTO = FlightSearchResponseDTO.builder()
+                    .id(flightSchedule.getId())
+                    .flightNumber(flightSchedule.getFlightNumber())
+                    .departureDate(date)
+                    .departureTime(flightSchedule.getDepartureTime())
+                    .departureAirport(flightSchedule.getDepartureAirport())
+                    .arrivalTime(flightSchedule.getArrivalTime())
+                    .arrivalAirport(flightSchedule.getArrivalAirport())
                     .build();
 
             responseDTOList.add(responseDTO);
