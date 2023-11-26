@@ -33,14 +33,6 @@ function Login() {
       return;
     }
 
-    // 비밀번호 확인
-    const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
-    if (!passwordRegex.test(password)) {
-      alert('비밀번호는 6자리 이상, 영문자, 숫자, 특수문자를 포함해야 합니다.');
-      return;
-    }
-
     console.log('Username:', username);
     console.log('Password:', password);
 
@@ -78,6 +70,12 @@ function Login() {
     });
   };
 
+  const handleManager = () => {
+    loginhistory.push({
+      pathname: '/ManagerPage',
+    });
+  };
+
   return (
     <Container>
       <Form>
@@ -108,7 +106,7 @@ function Login() {
         </SubmitDiv>
       </Form>
       <StyledLink to={'/ManagerPage'}>
-        <SearchButton onClick={handleRetister}>관리자 로그인</SearchButton>
+        <SearchButton onClick={handleManager}>관리자 페이지</SearchButton>
       </StyledLink>
     </Container>
   );

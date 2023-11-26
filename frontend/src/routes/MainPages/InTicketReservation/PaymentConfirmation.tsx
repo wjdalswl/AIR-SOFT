@@ -3,6 +3,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { TicketProps } from '../../api';
 import { PaymentButton, StyledLink } from './ SeatSelection';
+import { getToken } from '../../TokenManagement/token';
 import { LocationDiv, Locationheading } from './ TicketReservation';
 import {
   Title,
@@ -31,6 +32,7 @@ const SubContainer3 = styled.div`
 `;
 
 function PaymentConfirmation() {
+  const token = getToken();
   const location = useLocation<TicketProps>();
   const history = useHistory();
 
@@ -99,8 +101,6 @@ function PaymentConfirmation() {
     );
 
     const ticketData = {
-      userId: 1,
-
       flightId: location.state.flightData[0].id,
 
       seatClass: location.state.flightData[0].seatClass,
@@ -114,6 +114,7 @@ function PaymentConfirmation() {
     fetch('/api/reservations/reserve', {
       method: 'POST',
       headers: {
+        Authorization: 'Bearer ' + token,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(ticketData),
