@@ -3,6 +3,8 @@ package com.project.airsoft.controller;
 import com.project.airsoft.domain.Reservation;
 import com.project.airsoft.domain.User;
 import com.project.airsoft.dto.ReservationRequestDTO;
+import com.project.airsoft.dto.ReservationSearchResponseDTO;
+import com.project.airsoft.repository.SeatsRepository;
 import com.project.airsoft.repository.UserRepository;
 import com.project.airsoft.service.ReservationService;
 import java.util.Optional;
@@ -25,6 +27,7 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final UserRepository userRepository;
+    private final SeatsRepository seatsRepository;
 
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveFlight(Authentication authentication,
@@ -36,8 +39,21 @@ public class ReservationController {
     }
 
     @GetMapping("/search")
-    public Reservation searchReservation(@RequestParam String code) {
-        return reservationService.searchReservation(code);
+    public ReservationSearchResponseDTO searchReservation(@RequestParam String code) {
+        Reservation reservation = reservationService.searchReservation(code);
+        return ReservationSearchResponseDTO.builder().
+                id(reservation.getId()).
+                departureDate(reservation.getDepartureDate()).
+                arrivalDate(reservation.getArrivalDate()).
+                departureAirport(reservation.getFlightSchedule().getDepartureAirport()).
+                arrivalAirport(reservation.getFlightSchedule().getArrivalAirport()).
+                departureTime(reservation.getFlightSchedule().getDepartureTime()).
+                arrivalTime(reservation.getFlightSchedule().getArrivalTime()).
+                passengers(reservation.getPassengers()).
+                seatClass(reservation.getSeatClass()).
+                seatRow(seatsRepository.findById(reservation.getSeatId()).get().getSeatRow()).
+                seatLetter(seatsRepository.findById(reservation.getSeatId()).get().getSeatLetter())
+                .build();
     }
 
     @GetMapping("/cancel/{reservation_id}")
