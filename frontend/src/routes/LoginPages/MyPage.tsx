@@ -1,14 +1,59 @@
 import { useState, useEffect } from 'react';
 import { Container } from '../MainPages/InTicketReservation/FlightSelect';
-import { SearchButton } from '../MainPages/InTicketReservation/ TicketReservation';
 import { useHistory } from 'react-router-dom';
 import { getToken, removeToken } from '../TokenManagement/token';
 import setAuthorizationToken from '../TokenManagement/setAuthorizationToken';
-import {
-  FlightList,
-  Title,
-} from '../MainPages/InTicketReservation/FlightSelect';
 import QRCode from 'qrcode.react';
+import styled from 'styled-components';
+
+const UserInforms = styled.div`
+  padding: 15px 0px;
+  background-color: white;
+  width: 100%;
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const UserName = styled.span`
+  font-family: sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  margin-bottom: 5px;
+`;
+
+const UserEnName = styled.span`
+  margin-bottom: 20px;
+  font-weight: 100;
+  font-family: sans-serif;
+`;
+const UserInform = styled.div`
+  width: 700px;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const UserInformation = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  border-bottom: 1px solid #d1cfdd;
+`;
+const UserInformationhead = styled.span`
+  background-color: rgba(209, 207, 221, 0.8);
+  padding: 5px 7px;
+  border-radius: 20px;
+  margin-bottom: 13px;
+  font-family: sans-serif;
+`;
+
+const UserBth = styled.span``;
 
 interface ReservationData {
   departureDate: string;
@@ -19,6 +64,76 @@ interface ReservationData {
   seatLetter: string;
   id: string;
 }
+const Title = styled.span`
+  font-family: sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  background-color: rgba(209, 207, 221, 0.7);
+  padding: 7px 10px;
+  margin: 20px;
+  border-radius: 20px;
+`;
+export const ReservationsUl = styled.ul`
+  width: 90%;
+  height: 1000px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  overflow: auto;
+`;
+
+export const Reservationli = styled.li`
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 300px;
+  height: 440px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 30px 10px 30px;
+  margin-bottom: 20px;
+`;
+export const ReservationId = styled.span`
+  font-family: sans-serif;
+  font-size: 23px;
+  font-weight: 900;
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
+  padding: 15px 0px;
+`;
+
+export const Bin = styled.div`
+  margin: 10px 0px;
+  display: flex;
+  flex-direction: column;
+  & p {
+    font-weight: 100;
+    color: rgba(0, 0, 0, 8);
+  }
+`;
+
+export const Boldspan = styled.span`
+  font-size: 15px;
+  font-weight: 900;
+  margin: 4px 0px;
+`;
+
+export const StyledButton = styled.button`
+  background-color: rgba(128, 145, 171, 0.82);
+  width: 120px;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin: 15px 0px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #677486; /* 마우스 오버 시 배경색 변경 */
+  }
+`;
 
 function MyPage() {
   const token = getToken();
@@ -27,6 +142,8 @@ function MyPage() {
   const history = useHistory();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!token);
   const [myPageData, setMyPageData] = useState<any>(null);
+  const [arrivalTimes, setArrivalTimes] = useState<string[]>([]);
+  const [departureTimes, setDepartureTimes] = useState<string[]>([]);
 
   // 화면 생성시 서버에 데이터 요청, + isLoggedIn 변경 상항있을때도
   useEffect(() => {
@@ -42,6 +159,25 @@ function MyPage() {
         .then((data) => {
           console.log('Server response MyPage data:', data);
           setMyPageData(data);
+
+          const arrivalTimes = data.reservations.map((reservation: any) => {
+            const arrivalDateTime = new Date(reservation.arrivalTime);
+            return arrivalDateTime.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+          });
+
+          const departureTimes = data.reservations.map((reservation: any) => {
+            const departureDateTime = new Date(reservation.departureTime);
+            return departureDateTime.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+          });
+
+          setArrivalTimes(arrivalTimes);
+          setDepartureTimes(departureTimes);
         })
         .catch((error) => {
           console.error('Error sending MyPage data to server:', error);
@@ -95,55 +231,69 @@ function MyPage() {
   };
 
   return (
-    <div>
+    <>
       {isLoggedIn ? (
         <Container>
-          <div>
-            <p>이름: {myPageData?.korName}</p>
-            <p>영문 이름: {myPageData?.engName}</p>
-            <p>생년월일: {myPageData?.birth}</p>
-            <p>이메일: {myPageData?.email}</p>
-            <p>전화번호: {myPageData?.phone}</p>
-          </div>
-          <div>
-            <Title>예약 확인</Title>
-            {myPageData?.reservations && myPageData.reservations.length > 0 ? (
-              <FlightList>
-                {myPageData.reservations.map(
-                  (reservation: any, index: number) => (
-                    <li key={index}>
+          <UserInforms>
+            <UserName>{myPageData?.korName}</UserName>
+            <UserEnName>영문 이름 {myPageData?.engName}</UserEnName>
+            <UserInform>
+              <UserInformation>
+                <UserInformationhead>생년월일</UserInformationhead>
+                <UserBth>{myPageData?.birth}</UserBth>
+              </UserInformation>
+              <UserInformation>
+                <UserInformationhead>이메일</UserInformationhead>
+                <UserBth>{myPageData?.email}</UserBth>
+              </UserInformation>
+              <UserInformation>
+                <UserInformationhead>전화번호</UserInformationhead>
+                <UserBth>{myPageData?.phone}</UserBth>
+              </UserInformation>
+            </UserInform>
+          </UserInforms>
+          <Title>예약 확인</Title>
+          {myPageData?.reservations && myPageData.reservations.length > 0 ? (
+            <ReservationsUl>
+              {myPageData.reservations.map(
+                (reservation: any, index: number) => (
+                  <Reservationli key={index}>
+                    <ReservationId>예약 번호: {reservation.id}</ReservationId>
+                    <Bin>
                       <p>출발일: {reservation.departureDate}</p>
-                      <p>도착일: {reservation.arrivalDate}</p>
-                      <p>승객 수: {reservation.passengers}</p>
-                      <p>좌석 등급: {reservation.seatClass}</p>
-                      <p>
-                        좌석 위치: {reservation.seatRow}행{' '}
-                        {reservation.seatLetter}열
-                      </p>
-                      <QRCode
-                        value={`예약 정보: ${JSON.stringify(reservation)}`}
-                      />
-                      <SearchButton
-                        onClick={() => handleCancelReservation(reservation.id)}
-                      >
-                        예약 취소
-                      </SearchButton>
-                    </li>
-                  )
-                )}
-              </FlightList>
-            ) : (
-              <p>예약 내역이 없습니다.</p>
-            )}
-          </div>
-          <SearchButton onClick={handleLogout}>로그아웃</SearchButton>
+                      <Boldspan>출발시간 {departureTimes[index]}</Boldspan>
+                      <Boldspan>도착시간 {arrivalTimes[index]}</Boldspan>
+                    </Bin>
+                    <Bin>
+                      <Boldspan>좌석 등급: {reservation.seatClass}</Boldspan>
+                      <Boldspan>
+                        좌석 위치: {reservation.seatRow}-
+                        {reservation.seatLetter}
+                      </Boldspan>
+                    </Bin>
+                    <QRCode
+                      value={`예약 정보: ${JSON.stringify(reservation)}`}
+                    />
+                    <StyledButton
+                      onClick={() => handleCancelReservation(reservation.id)}
+                    >
+                      예약 취소
+                    </StyledButton>
+                  </Reservationli>
+                )
+              )}
+            </ReservationsUl>
+          ) : (
+            <p>예약 내역이 없습니다.</p>
+          )}
+          <StyledButton onClick={handleLogout}>로그아웃</StyledButton>
         </Container>
       ) : (
         <Container>
           <p>로그인이 필요합니다.</p>
         </Container>
       )}
-    </div>
+    </>
   );
 }
 

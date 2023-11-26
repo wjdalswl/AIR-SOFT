@@ -19,7 +19,6 @@ export const Container = styled.div`
 `;
 
 export const SubContainer1 = styled.div`
-  margin-bottom: 20px;
   margin-bottom: 10px;
   padding: 0;
   width: 100%;
@@ -30,7 +29,6 @@ export const SubContainer1 = styled.div`
 `;
 
 export const SubContainer = styled.div`
-  margin-bottom: 20px;
   margin-bottom: 10px;
   padding: 0;
   width: 100%;
