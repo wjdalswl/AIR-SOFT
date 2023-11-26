@@ -39,6 +39,17 @@ public class SignController {
         return "redirect:/";
     }
 
+    @GetMapping("/admin/register")
+    public String adminRegister() {
+        return "adminRegisterForm";
+    }
+
+    @PostMapping("/admin/register")
+    public String adminSignup(@RequestBody SignRequest request) throws Exception {
+        signService.adminRegister(request);
+        return "redirect:/";
+    }
+
     @GetMapping("/user/get")
     public ResponseEntity<SignResponse> getUser(@RequestParam String account) throws Exception {
         return new ResponseEntity<>( signService.getUser(account), HttpStatus.OK);
