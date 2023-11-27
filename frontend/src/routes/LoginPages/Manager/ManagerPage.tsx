@@ -68,25 +68,33 @@ function ManagerPage() {
   };
 
   useEffect(() => {
-    const checkServerStatus = async () => {
-      try {
-        const response = await fetch('/check-server-status');
-
+    fetch('/ManagerPage', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
         if (!response.ok) {
-          alert('관리자 권한이 없습니다.');
-          history.push('/');
+          // 권한이 없는 경우
+          if (response.status === 403) {
+            throw new Error('Unauthorized: 권한이 없는 사용자입니다.');
+          }
         }
-      } catch (error) {
-        alert('관리자 권한이 없습니다.');
-        history.push('/');
-      }
-    };
-    // 5분(300000 밀리초)마다 서버 상태 확인
-    const intervalId = setInterval(checkServerStatus, 300000);
-
-    // 컴포넌트 언마운트 시 타이머 정리
-    return () => clearInterval(intervalId);
-  }, [history]);
+        return response.text();
+      })
+      .then((data) => {
+        console.log('Server response MyPage data:', data);
+      })
+      .catch((error) => {
+        alert('관리자 권한이 없는 사용자 입니다.');
+        console.error('Error sending MyPage data to server:', error.message);
+        history.push({
+          pathname: '/',
+        });
+      });
+  }, [token]);
 
   const onSubmit = async () => {
     if (file) {
