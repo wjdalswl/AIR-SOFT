@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -38,11 +39,8 @@ public class UploadController {
     }
 
     @PostMapping("/adminupload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
-        if (file.isEmpty()) {
-            model.addAttribute("message", "Please select a file to upload.");
-            return "uploadForm";
-        }
+    @ResponseBody
+    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
 
         try {
             String uploadDir = "uploads/";
@@ -55,13 +53,11 @@ public class UploadController {
 
             processCsv(file);
 
-            model.addAttribute("message", "File uploaded successfully!");
+            return "파일 업로드 완료";
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("message", "Error uploading the file.");
+            return "파일 업로드 에러";
         }
-
-        return "uploadForm";
     }
 
     private void processCsv(MultipartFile file) {
