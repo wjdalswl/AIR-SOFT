@@ -7,45 +7,34 @@ import {
   DataInputDiv,
   SearchButton,
   StyledLink,
-} from './InTicketReservation/ TicketReservation';
+} from '../InTicketReservation/ TicketReservation';
+import { useHistory } from 'react-router-dom';
 
 function CheckIn() {
+  const history = useHistory();
   const today = new Date();
   const todayISOString = today.toISOString().split('T')[0];
 
-  const [reservationNumber, setReservationNumber] = useState('');
+  const [code, setCode] = useState('');
   const [date, setDate] = useState<string | undefined>(todayISOString);
   const [passengerLastName, setPassengerLastName] = useState('');
   const [passengerFirstName, setPassengerFirstName] = useState('');
-  const [flightStatus, setFlightStatus] = useState(null);
 
   const handleDateChange = (value: string) => {
     setDate(value || todayISOString);
   };
 
-  const handleSearch = () => {
-    // 조회 기능 구현
-    const queryParams = new URLSearchParams({});
+  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!code || !passengerLastName || !passengerFirstName) {
+      alert('필드를 모두 입력해주세요.');
+      return;
+    }
 
-    const apiUrl = `/api/FlightSelect?${queryParams.toString()}`;
-
-    fetch(apiUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Flight Data1111:', data);
-      })
-      .catch((error) => {
-        // 에러 처리
-        console.error(
-          'There has been a problem with your fetch operation:',
-          error
-        );
-      });
+    history.push({
+      pathname: '/ShowCheckIn',
+      state: code,
+    });
   };
 
   return (
@@ -56,9 +45,9 @@ function CheckIn() {
           <DataInputDiv>
             <input
               type="text"
-              placeholder="KE1009"
-              value={reservationNumber}
-              onChange={(e) => setReservationNumber(e.target.value)}
+              placeholder="A1B2C3"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
             />
           </DataInputDiv>
         </InputDiv>
@@ -102,7 +91,8 @@ function CheckIn() {
       </SubContainer>
       <StyledLink
         to={{
-          pathname: '/FlightSelect/Reservation',
+          pathname: '/ShowCheckIn',
+          state: code,
         }}
       >
         <SearchButton onClick={handleSearch}>조회</SearchButton>

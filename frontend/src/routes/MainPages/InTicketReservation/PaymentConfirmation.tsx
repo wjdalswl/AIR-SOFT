@@ -83,9 +83,7 @@ function PaymentConfirmation() {
       setArrivalTimes(formattedArrivalTimes);
       setDepartureTimes(formattedDepartureTimes);
     } else {
-      // 데이터가 없으면 홈페이지로 이동
       alert(`데이터가 존재하지 않습니다.`);
-      //history.push('/');
     }
   }, [location.state, history]);
 

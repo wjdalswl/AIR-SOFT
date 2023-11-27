@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 import TicketReservation from './InTicketReservation/ TicketReservation';
 import ReservationInquiry from './InReservationInquiry.tsx/ReservationInquiry';
-import CheckIn from './CheckIn';
+import CheckIn from './InCheckIn/CheckIn';
 import FlightStatus from './InFlightStatus/FlightStatus';
 
 export const Container = styled.div`

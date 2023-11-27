@@ -8,6 +8,9 @@ export interface FlightData {
   seatClass: string;
   seatsTotal: number;
   departureDate: string;
+  seatRow: number;
+  seatLetter: string;
+  price: number;
 }
 
 export interface SeatData {
