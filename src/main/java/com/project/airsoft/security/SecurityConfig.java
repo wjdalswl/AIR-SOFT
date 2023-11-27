@@ -60,7 +60,7 @@ public class SecurityConfig{
                 .authorizeRequests()
                 // 회원가입과 로그인은 모두 승인
                 .antMatchers("/register", "/login").permitAll()
-                .antMatchers("/adminupload").hasRole("ADMIN")
+                .antMatchers("/ManagerPage").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()
                 .antMatchers("/api/FlightSelect/**").permitAll()
                 .antMatchers("/FlightSelect/**").permitAll()
