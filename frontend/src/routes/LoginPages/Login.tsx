@@ -24,15 +24,6 @@ const LoginDiv = styled.div`
   margin-right: 25px;
 `;
 
-export const ManagerPageLink = styled(Link)`
-  text-decoration: none;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-`;
-
 function Login() {
   const loginhistory = useHistory();
 
@@ -81,12 +72,6 @@ function Login() {
     });
   };
 
-  const handleManager = () => {
-    loginhistory.push({
-      pathname: '/ManagerPage',
-    });
-  };
-
   return (
     <Container>
       <Form>
@@ -116,13 +101,6 @@ function Login() {
           </StyledLink>
         </SubmitDiv>
       </Form>
-      <ManagerPageLink
-        to={{
-          pathname: '/ManagerPage',
-        }}
-      >
-        <SearchButton onClick={handleManager}>관리자 페이지</SearchButton>
-      </ManagerPageLink>
     </Container>
   );
 }
