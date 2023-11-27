@@ -258,9 +258,9 @@ const generateInitialIsOccupied = (
         const seatIndex = (seatRow - 1) * columns + columnIndex;
 
         if (seatIndex >= 0 && seatIndex < rows * columns) {
-          if (isBusinessClass && seatRow === 0) {
+          if (isBusinessClass && seatRow === 1) {
             initialIsOccupied[seatIndex] = !available; // 반전시킴
-          } else if (!isBusinessClass && seatRow >= 1 && seatRow <= 9) {
+          } else if (!isBusinessClass && seatRow >= 2 && seatRow <= 9) {
             initialIsOccupied[seatIndex] = !available; // 반전시킴
           }
         }

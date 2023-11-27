@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Container } from '../MainPages/InTicketReservation/FlightSelect';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { getToken, removeToken } from '../TokenManagement/token';
 import setAuthorizationToken from '../TokenManagement/setAuthorizationToken';
 import QRCode from 'qrcode.react';
 import styled from 'styled-components';
+import { SearchButton } from '../MainPages/InTicketReservation/ TicketReservation';
 
 const UserInforms = styled.div`
   padding: 15px 0px;
@@ -134,6 +135,14 @@ export const StyledButton = styled.button`
     background-color: #677486; /* 마우스 오버 시 배경색 변경 */
   }
 `;
+export const ManagerPageLink = styled(Link)`
+  text-decoration: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+`;
 
 function MyPage() {
   const token = getToken();
@@ -230,6 +239,12 @@ function MyPage() {
     }
   };
 
+  const handleManager = () => {
+    history.push({
+      pathname: '/ManagerPage',
+    });
+  };
+
   return (
     <>
       {isLoggedIn ? (
@@ -287,6 +302,13 @@ function MyPage() {
             <p>예약 내역이 없습니다.</p>
           )}
           <StyledButton onClick={handleLogout}>로그아웃</StyledButton>
+          <ManagerPageLink
+            to={{
+              pathname: '/ManagerPage',
+            }}
+          >
+            <SearchButton onClick={handleManager}>관리자 페이지</SearchButton>
+          </ManagerPageLink>
         </Container>
       ) : (
         <Container>
