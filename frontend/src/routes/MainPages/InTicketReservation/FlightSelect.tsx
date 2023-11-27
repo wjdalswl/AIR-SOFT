@@ -147,11 +147,6 @@ function FlightSelect() {
   }, [location.state, searchResults, passengerCount, paymentType]);
 
   const handleLinkClick = (flight: FlightData) => {
-    console.log('flight:', flight);
-    console.log('paymentType:', paymentType);
-    console.log('passengerCount:', passengerCount);
-    console.log('paymentAmount:', paymentAmount);
-
     const token = getToken();
 
     // 토큰 없으면 로그인 페이지 이동

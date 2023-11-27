@@ -118,7 +118,6 @@ function FlightSelect() {
                   </LocationDiv>
                 </SubContainer>
                 <SubContainer2>
-                  <span>💺남아있는 좌석 수: {flight.seatsTotal}</span>
                   <span>💸이코노미석 금액: 100000원</span>
                   <span>💵비즈니스석 금액: 150000원</span>
                 </SubContainer2>

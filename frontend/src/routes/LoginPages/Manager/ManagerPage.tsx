@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container } from '../../MainPages/InTicketReservation/FlightSelect';
 import { FormButton } from '../RegisterForm';
-import { getToken } from '../../TokenManagement/token';
+import { getToken, removeToken } from '../../TokenManagement/token';
+import setAuthorizationToken from '../../TokenManagement/setAuthorizationToken';
 
 export const SubContainer = styled.div`
   margin: 0;
@@ -48,6 +50,9 @@ const CSVInputDiv = styled.div`
 
 function ManagerPage() {
   const token = getToken();
+  setAuthorizationToken(token);
+
+  const history = useHistory();
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
 
@@ -61,6 +66,27 @@ function ManagerPage() {
       alert('Please select a valid .csv file.');
     }
   };
+
+  useEffect(() => {
+    const checkServerStatus = async () => {
+      try {
+        const response = await fetch('/check-server-status');
+
+        if (!response.ok) {
+          alert('관리자 권한이 없습니다.');
+          history.push('/');
+        }
+      } catch (error) {
+        alert('관리자 권한이 없습니다.');
+        history.push('/');
+      }
+    };
+    // 5분(300000 밀리초)마다 서버 상태 확인
+    const intervalId = setInterval(checkServerStatus, 300000);
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => clearInterval(intervalId);
+  }, [history]);
 
   const onSubmit = async () => {
     if (file) {

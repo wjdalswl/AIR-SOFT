@@ -119,6 +119,7 @@ function FlightStatus() {
       <InputDiv>
         <DataInputheading>출발일</DataInputheading>
         <DataInputDiv>
+          <span>📅</span>
           <input
             type="date"
             value={date}

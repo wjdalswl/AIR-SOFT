@@ -19,37 +19,22 @@ function ReservationInquiry() {
   const [date, setDate] = useState<string | undefined>(todayISOString);
   const [passengerLastName, setPassengerLastName] = useState('');
   const [passengerFirstName, setPassengerFirstName] = useState('');
-  const [flightData, setFlightData] = useState<any>(null);
 
   const handleDateChange = (value: string) => {
     setDate(value || todayISOString);
   };
 
-  const handleSearch = () => {
-    fetch(`/api/reservations/search?${code}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // 서버로부터 받은 데이터를 state에 설정
-        setFlightData(data);
+  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!code || !passengerLastName || !passengerFirstName) {
+      alert('필드를 모두 입력해주세요.');
+      return;
+    }
 
-        // 데이터를 받은 후에 다음 페이지로 이동
-        history.push({
-          pathname: '/ShowReservation',
-          state: { flightData: data },
-        });
-      })
-      .catch((error) => {
-        // 에러 처리
-        console.error(
-          'There has been a problem with your fetch operation:',
-          error
-        );
-      });
+    history.push({
+      pathname: '/ShowReservation',
+      state: code,
+    });
   };
 
   return (
@@ -60,7 +45,7 @@ function ReservationInquiry() {
           <DataInputDiv>
             <input
               type="text"
-              placeholder="KE1009"
+              placeholder="A1B2C3"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
@@ -107,6 +92,7 @@ function ReservationInquiry() {
       <StyledLink
         to={{
           pathname: '/ShowReservation',
+          state: code,
         }}
       >
         <SearchButton onClick={handleSearch}>조회</SearchButton>

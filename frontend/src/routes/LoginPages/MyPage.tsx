@@ -88,7 +88,7 @@ export const ReservationsUl = styled.ul`
 export const Reservationli = styled.li`
   background-color: rgba(255, 255, 255, 0.9);
   width: 300px;
-  height: 440px;
+  height: 480px;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -153,6 +153,34 @@ function MyPage() {
   const [myPageData, setMyPageData] = useState<any>(null);
   const [arrivalTimes, setArrivalTimes] = useState<string[]>([]);
   const [departureTimes, setDepartureTimes] = useState<string[]>([]);
+  setAuthorizationToken(token);
+
+  useEffect(() => {
+    const checkServerStatus = async () => {
+      try {
+        // 서버에 특정 요청을 보내서 응답을 확인
+        const response = await fetch('/check-server-status');
+
+        if (!response.ok) {
+          // 서버 응답이 실패하면 로그아웃 수행
+          removeToken();
+          setAuthorizationToken('');
+          history.push('/TicketReservation');
+        }
+      } catch (error) {
+        // 에러가 발생하면 로그아웃 수행
+        removeToken();
+        setAuthorizationToken('');
+        history.push('/TicketReservation');
+      }
+    };
+
+    // 5분(300000 밀리초)마다 서버 상태 확인
+    const intervalId = setInterval(checkServerStatus, 300000);
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => clearInterval(intervalId);
+  }, [history]);
 
   // 화면 생성시 서버에 데이터 요청, + isLoggedIn 변경 상항있을때도
   useEffect(() => {
@@ -278,6 +306,12 @@ function MyPage() {
                       <p>출발일: {reservation.departureDate}</p>
                       <Boldspan>출발시간 {departureTimes[index]}</Boldspan>
                       <Boldspan>도착시간 {arrivalTimes[index]}</Boldspan>
+                    </Bin>
+                    <Bin>
+                      <Boldspan>
+                        출발공항 {reservation.departureAirport}
+                      </Boldspan>
+                      <Boldspan>도착공항 {reservation.arrivalAirport}</Boldspan>
                     </Bin>
                     <Bin>
                       <Boldspan>좌석 등급: {reservation.seatClass}</Boldspan>

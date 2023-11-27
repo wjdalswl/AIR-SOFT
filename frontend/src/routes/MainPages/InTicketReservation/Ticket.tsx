@@ -16,13 +16,8 @@ function Ticket() {
   const [departureTimes, setDepartureTimes] = useState<string[]>([]);
 
   const location = useLocation<TicketProps>();
-  const {
-    flightData,
-    paymentType,
-    passengerCount,
-    paymentAmount,
-    selectedSeats,
-  } = location.state || {};
+  const { flightData, passengerCount, paymentAmount, selectedSeats } =
+    location.state || {};
 
   const tickets = Array.from({ length: passengerCount || 0 }, (_, index) => {
     const flightDetails = flightData[0];
@@ -33,6 +28,8 @@ function Ticket() {
     return {
       flightDetails: {
         airline: flightDetails?.flightNumber,
+        arrivalAirport: flightDetails?.arrivalAirport,
+        departureAirport: flightDetails?.departureAirport,
         departureTime: departureDateTime.toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
@@ -77,12 +74,17 @@ function Ticket() {
             <Bin>
               <p>항공사: {ticket.flightDetails?.airline}</p>
               <p>출발일: {ticket.flightDetails?.departureDate}</p>
-              <Boldspan>
-                출발시간: {ticket.flightDetails?.departureTime}
-              </Boldspan>
-              <Boldspan>도착시간: {ticket.flightDetails?.arrivalTime}</Boldspan>
+              <Boldspan>출발시간: {arrivalTimes}</Boldspan>
+              <Boldspan>도착시간: {departureTimes}</Boldspan>
             </Bin>
-
+            <Bin>
+              <Boldspan>
+                출발공항 {ticket.flightDetails?.departureAirport}
+              </Boldspan>
+              <Boldspan>
+                도착공항 {ticket.flightDetails?.arrivalAirport}
+              </Boldspan>
+            </Bin>
             <Bin>
               <Boldspan>
                 승객수: {ticket.flightDetails?.passengerCount}
