@@ -12,6 +12,8 @@ import com.project.airsoft.security.JwtProvider;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +37,6 @@ public class MyPageController {
             throw new NoAuthenticationException("인증되지 않은 사용자입니다.");
         }
 
-        // 현재 인증된 사용자의 이름을 가져옵니다.
         String username = authentication.getName();
         User user = userRepository.findByUsername(username).get();
 
@@ -76,6 +77,18 @@ public class MyPageController {
             throw new RuntimeException("인증되지 않은 사용자임");
         }
     }
+
+    @GetMapping("/ManagerPage")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getAdminPage(Authentication authentication) throws NoAuthenticationException {
+
+        if (authentication == null) {
+            throw new NoAuthenticationException("권한이 없습니다.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("관리자 로그인 성공");
+    }
+
+
 
     private boolean isCurrentUserPage(String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
