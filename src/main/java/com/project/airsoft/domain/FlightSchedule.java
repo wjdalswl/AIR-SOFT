@@ -60,10 +60,6 @@ public class FlightSchedule implements Serializable {
     @JsonIgnore
     private List<Reservation> reservationList;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "price_id")
-    private Price price;
-
     public Long getSeatsTotal(String seatClass) {
 
         if(seatClass.equals("economy")) {
