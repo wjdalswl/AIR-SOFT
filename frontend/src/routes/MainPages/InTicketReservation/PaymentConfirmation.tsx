@@ -154,14 +154,14 @@ function PaymentConfirmation() {
             <LocationDiv>
               <TimeSpan>{departureTimes[0]}</TimeSpan>
               <Locationheading>
-                ✈️{flightDataState?.flightData[0]?.arrivalAirport}
+                ✈️{flightDataState?.flightData[0]?.departureAirport}
               </Locationheading>
             </LocationDiv>
             <ArrowDiv></ArrowDiv>
             <LocationDiv>
               <TimeSpan>{arrivalTimes[0]}</TimeSpan>
               <Locationheading>
-                ✈️{flightDataState?.flightData[0]?.departureAirport}
+                ✈️{flightDataState?.flightData[0]?.arrivalAirport}
               </Locationheading>
             </LocationDiv>
           </SubContainer3>
