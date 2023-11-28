@@ -12,8 +12,8 @@ import {
 } from '../../LoginPages/MyPage';
 
 function Ticket() {
-  const [arrivalTimes, setArrivalTimes] = useState<string[]>([]);
-  const [departureTimes, setDepartureTimes] = useState<string[]>([]);
+  const [arrivalTime, setArrivalTime] = useState<string[]>([]);
+  const [departureTime, setDepartureTime] = useState<string[]>([]);
 
   const location = useLocation<TicketProps>();
   const { flightData, passengerCount, paymentAmount, selectedSeats } =
@@ -22,19 +22,19 @@ function Ticket() {
   const tickets = Array.from({ length: passengerCount || 0 }, (_, index) => {
     const flightDetails = flightData[0];
 
-    const arrivalDateTime = new Date(flightDetails?.arrivalTime || '');
-    const departureDateTime = new Date(flightDetails?.departureTime || '');
+    const arrivalTime = new Date(flightDetails?.arrivalTime || '');
+    const departureTime = new Date(flightDetails?.departureTime || '');
 
     return {
       flightDetails: {
         airline: flightDetails?.flightNumber,
         arrivalAirport: flightDetails?.arrivalAirport,
         departureAirport: flightDetails?.departureAirport,
-        departureTime: departureDateTime.toLocaleTimeString([], {
+        departureTime: departureTime.toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
         }),
-        arrivalTime: arrivalDateTime.toLocaleTimeString([], {
+        arrivalTime: arrivalTime.toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
         }),
@@ -53,18 +53,6 @@ function Ticket() {
     };
   });
 
-  useEffect(() => {
-    const arrivalTimes = tickets.map(
-      (ticket) => ticket.flightDetails?.arrivalTime || ''
-    );
-    const departureTimes = tickets.map(
-      (ticket) => ticket.flightDetails?.departureTime || ''
-    );
-
-    setArrivalTimes(arrivalTimes);
-    setDepartureTimes(departureTimes);
-  }, [tickets]);
-
   return (
     <Container>
       <ReservationsUl>
@@ -74,8 +62,8 @@ function Ticket() {
             <Bin>
               <p>항공사: {ticket.flightDetails?.airline}</p>
               <p>출발일: {ticket.flightDetails?.departureDate}</p>
-              <Boldspan>출발시간: {arrivalTimes}</Boldspan>
-              <Boldspan>도착시간: {departureTimes}</Boldspan>
+              <Boldspan>출발시간: {arrivalTime}</Boldspan>
+              <Boldspan>도착시간: {departureTime}</Boldspan>
             </Bin>
             <Bin>
               <Boldspan>
