@@ -62,8 +62,8 @@ function Ticket() {
             <Bin>
               <p>항공사: {ticket.flightDetails?.airline}</p>
               <p>출발일: {ticket.flightDetails?.departureDate}</p>
-              <Boldspan>출발시간: {arrivalTime}</Boldspan>
-              <Boldspan>도착시간: {departureTime}</Boldspan>
+              <Boldspan>출발시간: {ticket.flightDetails?.departureTime}</Boldspan>
+              <Boldspan>도착시간: {ticket.flightDetails?.arrivalTime}</Boldspan>
             </Bin>
             <Bin>
               <Boldspan>
