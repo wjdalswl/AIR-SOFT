@@ -61,8 +61,8 @@ public class UploadController {
     }
 
     private void processCsv(MultipartFile file) {
-        String dateString1 = "2023.11.21";
-        String dateString2 = "2023.11.30";
+        String dateString1 = "2023.11.28";
+        String dateString2 = "2023.12.15";
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
