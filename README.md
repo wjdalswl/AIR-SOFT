@@ -1,7 +1,7 @@
 # ✈️ AIR-SOFT ✈️
 <img width="1920" alt="Slide 16_9 - 1" src="https://github.com/wjdalswl/AIR-SOFT/assets/109158284/a0fc1c4a-00b7-4c26-900e-ff17468c20c1">
 
-**Hello!** 👋 오픈소스기반 설계 프로젝트
+## 🛫 오픈소스기반 설계 프로젝트
 - 국내 데이터셋의 국내선 데이터를 이용한 비행기 예매 사이트
  < https://www.data.go.kr/data/15043890/fileData.do >
 - 비행기 예매시 티켓 전송
