@@ -13,9 +13,9 @@
 ## 🛫 Tech Stack
 ### 💻 Front
 <div align="left">
-<img alt="Static Badge" src="https://img.shields.io/badge/typescript-ec2025?style=flat-square&logo=typescript&logoColor=#3178C6">
-<img alt="Static Badge" src="https://img.shields.io/badge/react-34A853?style=flat-square&logo=react&logoColor=#61DAFB">
-<img alt="Static Badge" src="https://img.shields.io/badge/styledcomponents-34A853?style=flat-square&logo=styledcomponents&logoColor=#DB7093">
+<img alt="Static Badge" src="https://img.shields.io/badge/typescript-3178C6?style=flat-square&logo=typescript&logoColor=white">
+<img alt="Static Badge" src="https://img.shields.io/badge/react-61DAFB?style=flat-square&logo=react&logoColor=white">
+<img alt="Static Badge" src="https://img.shields.io/badge/styledcomponents-DB7093?style=flat-square&logo=styledcomponents&logoColor=white">
 </div>
 
 ### 🛫 Back
