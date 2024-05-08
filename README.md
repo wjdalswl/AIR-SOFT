@@ -1,0 +1,36 @@
+# 💚 AIR-SOFT 💚 
+### AIR-SOFT
+<img width="1920" alt="Slide 16_9 - 1" src="https://github.com/wjdalswl/AIR-SOFT/assets/109158284/c6adbc94-34fd-43da-93c4-0bada2f2aa30">
+
+**Hello!** 👋 오픈소스기반 설계 프로젝트
+- 국내 데이터셋의 국내선 데이터를 이용한 비행기 예매 사이트
+ < https://www.data.go.kr/data/15043890/fileData.do >
+- 비행기 예매시 티켓 전송
+
+## ✅ Our goal
+  1. 공공 데이터셋 사용 방법 습득
+  2. 예약 로직 구현하기
+
+## ✅ Tech Stack
+### 💻 Front
+<div align="left">
+<img alt="Static Badge" src="https://img.shields.io/badge/typescript-ec2025?style=flat-square&logo=java&logoColor="#3178C6">
+<img alt="Static Badge" src="https://img.shields.io/badge/react-34A853?style=flat-square&logo=android&logoColor="#61DAFB">
+<img alt="Static Badge" src="https://img.shields.io/badge/styledcomponents-34A853?style=flat-square&logo=android&logoColor="#DB7093">
+</div>
+
+### 💻 Back
+<div align="left">
+<img alt="Static Badge" src="https://img.shields.io/badge/Java-ec2025?style=flat-square&logo=java&logoColor=white">
+<img alt="Static Badge" src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white">
+<img alt="Static Badge" src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>
+</div>
+
+
+## ✅ Member
+|       Jinuk Lee      |      Minji Jeong         |                                                                                                    
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|   <img src="https://avatars.githubusercontent.com/u/113356682?v=4" width="170" alt="깃허브계정-프로필사진">   |  <img src="https://avatars.githubusercontent.com/u/109158284?v=4" width="170" alt="깃허브계정-프로필사진">  |
+| [@jinuklee777](https://github.com/jinuklee777)  | [@wjdalswl](https://github.com/wjdalswl)  |
+| Backend | Design && Frontend |
